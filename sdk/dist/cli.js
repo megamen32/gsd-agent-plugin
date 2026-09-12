@@ -9,14 +9,30 @@ import { parseArgs } from 'node:util';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { GSD } from './index.js';
-import { CLITransport } from './cli-transport.js';
-import { WSTransport } from './ws-transport.js';
-import { InitRunner } from './init-runner.js';
 import { validateWorkstreamName } from './workstream-utils.js';
-import { loadConfig } from './config.js';
-import { assertRuntimeSupportsAutoMode } from './runtime-gate.js';
 import { runQueryCliCommand } from './query/query-cli-adapter.js';
+// Query commands are the workflow-facing API used by Codex skills. Keep their
+// dependency graph independent of the optional Claude execution SDK so a git
+// marketplace cache can answer project-state queries without an npm install.
+let executionRuntime;
+async function loadExecutionRuntime() {
+    executionRuntime ??= Promise.all([
+        import('./index.js'),
+        import('./cli-transport.js'),
+        import('./ws-transport.js'),
+        import('./init-runner.js'),
+        import('./config.js'),
+        import('./runtime-gate.js'),
+    ]).then(([sdk, cliTransport, wsTransport, initRunner, config, runtimeGate]) => ({
+        GSD: sdk.GSD,
+        CLITransport: cliTransport.CLITransport,
+        WSTransport: wsTransport.WSTransport,
+        InitRunner: initRunner.InitRunner,
+        loadConfig: config.loadConfig,
+        assertRuntimeSupportsAutoMode: runtimeGate.assertRuntimeSupportsAutoMode,
+    }));
+    return executionRuntime;
+}
 /**
  * Parse `gsd-sdk query …` without rejecting unknown flags (query argv is forwarded to the registry).
  */
@@ -271,6 +287,7 @@ export async function main(argv = process.argv.slice(2)) {
         process.exitCode = result.exitCode;
         return;
     }
+    const { GSD, CLITransport, WSTransport, InitRunner, loadConfig, assertRuntimeSupportsAutoMode } = await loadExecutionRuntime();
     // Fall back to GSD_WORKSTREAM env var when --ws is not supplied (#2791).
     // gsd-tools.cjs resolves the active workstream via this env var; parity
     // means gsd-sdk command paths see the same .planning/ path as gsd-tools.

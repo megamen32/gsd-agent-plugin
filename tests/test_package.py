@@ -1,5 +1,6 @@
 import json
 import re
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -48,6 +49,28 @@ def test_bundled_sdk_and_workflows_exist():
         text=True,
     )
     assert "Usage: gsd-sdk" in result.stdout
+
+
+def test_sdk_runs_from_a_codex_style_cache_without_root_node_modules(tmp_path: Path):
+    """Codex checks out plugin files but does not run npm install for git marketplaces."""
+    cached = tmp_path / "gsd"
+
+    def ignore_root_dependencies(directory: str, _entries: list[str]) -> set[str]:
+        return {"node_modules", ".git", ".pytest_cache", "__pycache__"} if Path(directory) == ROOT else set()
+
+    shutil.copytree(
+        ROOT,
+        cached,
+        ignore=ignore_root_dependencies,
+    )
+    result = subprocess.run(
+        ["node", str(cached / "bin/gsd-sdk.js"), "query", "init.progress"],
+        check=True,
+        capture_output=True,
+        text=True,
+        cwd=cached,
+    )
+    assert json.loads(result.stdout)["project_exists"] is False
 
 
 def test_generated_opencode_projection_is_present():

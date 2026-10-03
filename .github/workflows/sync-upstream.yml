@@ -26,6 +26,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install test runner
+        run: python3 -m pip install --disable-pip-version-check "pytest>=8,<9"
       - name: Refresh upstream payload and reapply overlay
         run: python3 scripts/sync_upstream.py
       - name: Validate generated package

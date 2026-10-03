@@ -20,6 +20,8 @@ Tests and logs are supporting evidence, not substitutes for this gate.
 2. Identify the exact accepted claim, real surface, test identity/data, allowed
    side effects, and stop condition.
 3. Run the workflow after the final state-changing operation.
-4. Return only `PASS`, `CHANGES_REQUIRED`, or `BLOCKED_REAL_SURFACE`, with the
-   journey and evidence required by the workflow.
+4. Return only `PASS`, `CHANGES_REQUIRED`, `BLOCKED_REAL_SURFACE`, or
+   `BLOCKED_REPOSITORY_STATE`, with the journey and evidence required by the
+   workflow. `PASS` is forbidden until every changed repository is clean,
+   green, pushed, and synchronized on its remote default branch.
 </process>

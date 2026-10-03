@@ -64,6 +64,25 @@ screenshot before retrying or cleaning up.
 
 ## 4. Evidence and verdict
 
+Before recording evidence, enforce the repository completion invariant for
+every Git repository changed by the cycle:
+
+- relevant tests and checks are green, plus the real-surface canary required by
+  the accepted claim;
+- task-owned work is committed on the default branch (normally `main`) and
+  pushed to the authoritative remote;
+- after fetching, the authoritative checkout is clean and `HEAD` equals
+  `origin/main`, with no ahead/behind/divergence;
+- no task work remains in a stash, temporary branch, or secondary worktree;
+  task-created branches/worktrees are removed only after proving their commits
+  are reachable from remote `main`;
+- every other machine or checkout explicitly included in the cycle is clean
+  and synchronized to the same remote-main commit.
+
+Never reset, overwrite, silently rebase, stash away, or delete unrelated or
+unmerged user work to manufacture a pass. If preserved unrelated work prevents
+the invariant, return `BLOCKED_REPOSITORY_STATE` and name the exact boundary.
+
 Record the exact journey, expected and observed result, tested revision, and a
 claim-matching artifact: decisive screenshot/reference for UI, or exact command
 plus resulting state for nonvisual consumers. Add it to the active GSD UAT or
@@ -78,5 +97,8 @@ Return one verdict:
 - `BLOCKED_REAL_SURFACE`: the required account, device, deployment, or control
   surface is genuinely unavailable. State the exact missing boundary; do not
   replace it with simulated success or downgrade the claim silently.
+- `BLOCKED_REPOSITORY_STATE`: the repository cannot safely reach clean, green,
+  pushed, synchronized remote `main` without user authority or risking
+  unrelated/unmerged work. State the exact checkout and obstruction.
 
 Do not broaden the accepted Definition of Done during acceptance testing.

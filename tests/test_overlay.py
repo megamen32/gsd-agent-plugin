@@ -27,6 +27,15 @@ def test_overlay_is_present_on_completion_skills_only() -> None:
     assert (ROOT / "get-shit-done/workflows/acceptance-gate.md").is_file()
 
 
+def test_security_authorization_policy_is_present_in_every_skill_and_agent() -> None:
+    build = load_build_module()
+    for skill in (ROOT / "skills").glob("*/SKILL.md"):
+        assert skill.read_text().count(build.SECURITY_AUTHORIZATION_MARKER) == 1, skill
+    for pattern in ("*.md", "*.toml"):
+        for agent in (ROOT / "agents").glob(pattern):
+            assert agent.read_text().count(build.SECURITY_AUTHORIZATION_MARKER) == 1, agent
+
+
 def test_overlay_reapplies_after_clean_upstream_refresh(tmp_path: Path) -> None:
     build = load_build_module()
     output = tmp_path / "output"
@@ -38,6 +47,11 @@ def test_overlay_reapplies_after_clean_upstream_refresh(tmp_path: Path) -> None:
             "<execution_context>\n@/fake/.codex/get-shit-done/workflows/test.md\n"
             "</execution_context>\n"
         )
+    agent_md = output / "agents/gsd-demo.md"
+    agent_md.parent.mkdir(parents=True, exist_ok=True)
+    agent_md.write_text("---\nname: gsd-demo\n---\n\n<role>Demo</role>\n")
+    agent_toml = output / "agents/gsd-demo.toml"
+    agent_toml.write_text("name = \"gsd-demo\"\ndeveloper_instructions = '''\n<role>Demo</role>\n'''\n")
 
     build.apply_personal_overlay(output, ROOT / "overlay")
     build.inject_runtime_adapters(output, "/fake/.codex")
@@ -46,9 +60,13 @@ def test_overlay_reapplies_after_clean_upstream_refresh(tmp_path: Path) -> None:
     fast = (output / "skills/gsd-fast/SKILL.md").read_text()
     help_text = (output / "skills/gsd-help/SKILL.md").read_text()
     assert fast.count("<gsd_agent_plugin_adapter>") == 1
+    assert fast.count(build.SECURITY_AUTHORIZATION_MARKER) == 1
     assert fast.count(build.OVERLAY_MARKER) == 1
     assert "@../../get-shit-done/workflows/test.md" in fast
     assert build.OVERLAY_MARKER not in help_text
+    assert help_text.count(build.SECURITY_AUTHORIZATION_MARKER) == 1
+    assert agent_md.read_text().count(build.SECURITY_AUTHORIZATION_MARKER) == 1
+    assert agent_toml.read_text().count(build.SECURITY_AUTHORIZATION_MARKER) == 1
     assert (output / "skills/gsd-acceptance-gate/SKILL.md").is_file()
 
 
@@ -136,4 +154,4 @@ def test_metadata_versions_follow_upstream_without_hardcoded_test_version(tmp_pa
     assert package["homepage"] == "https://github.com/megamen32/gsd-agent-plugin"
     upstream = json.loads((tmp_path / "UPSTREAM.json").read_text())
     assert upstream["version"] == "9.8.7"
-    assert upstream["overlay"] == "megamen32-real-acceptance-v1"
+    assert upstream["overlay"] == "megamen32-real-acceptance-security-consent-v2"

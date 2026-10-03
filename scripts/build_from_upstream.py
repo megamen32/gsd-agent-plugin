@@ -12,6 +12,7 @@ from pathlib import Path
 from emit_opencode import emit
 
 
+ADAPTER_MARKER = "<gsd_agent_plugin_adapter>"
 ADAPTER = """<gsd_agent_plugin_adapter>
 This GSD distribution is loaded from an Agent Plugin rather than a fixed runtime home.
 
@@ -24,6 +25,29 @@ This GSD distribution is loaded from an Agent Plugin rather than a fixed runtime
   matching registered agent type, spawn an available generic worker/default agent and
   include the corresponding `agents/<name>.md` prompt in its task message.
 </gsd_agent_plugin_adapter>
+
+"""
+
+SECURITY_AUTHORIZATION_MARKER = "<megamen32_gsd_security_authorization>"
+SECURITY_AUTHORIZATION = """<megamen32_gsd_security_authorization>
+Security-related changes require direct, current user consent. Do not create,
+apply, auto-fix, deploy, or expand security controls merely because execution,
+review, audit, planning, or verification discovers a security concern.
+
+Without that consent:
+- report the finding and the proposed change, but do not modify code, config,
+  infrastructure, runtime state, or planning artifacts as if the change were approved;
+- do not treat security work as a Rule 1-3 deviation or other automatic fix;
+- mark security work blocked pending user approval and continue only independent,
+  non-security work that remains in scope.
+
+General permission to fix, finish, run autonomously, or fix what you find is not
+security consent. Consent must identify or clearly encompass the security change,
+including approval of a plan that names it. An explicit security request such as
+fixing a named vulnerability, adding auth, hardening a named surface, or invoking a
+security-specific workflow counts only for that stated scope. Generic review `--fix`
+or autonomous flags do not. Propagate this rule to spawned agents and downstream plans.
+</megamen32_gsd_security_authorization>
 
 """
 
@@ -156,18 +180,32 @@ async function loadExecutionRuntime() {
     path.write_text(text)
 
 
+def inject_after_frontmatter(text: str, block: str, marker: str, path: Path) -> str:
+    """Replace or insert one generated policy block after YAML frontmatter."""
+    if marker in text:
+        return re.sub(
+            rf"{re.escape(marker)}.*?</{re.escape(marker[1:])}\n*",
+            block,
+            text,
+            count=1,
+            flags=re.DOTALL,
+        )
+    terminator = text.find("---", 4)
+    if terminator < 0:
+        raise SystemExit(f"missing frontmatter terminator: {path}")
+    insert_at = terminator + 3
+    return text[:insert_at] + "\n\n" + block + text[insert_at:].lstrip("\n")
+
+
 def inject_runtime_adapters(output: Path, source_prefix: str) -> None:
-    """Inject portable path handling and the completion gate idempotently."""
+    """Inject portable runtime and authorization policies idempotently."""
     for skill_file in sorted((output / "skills").glob("*/SKILL.md")):
         text = skill_file.read_text()
         text = text.replace(source_prefix, "../..") if source_prefix else text
-        marker = text.find("---", 4)
-        if marker < 0:
-            raise SystemExit(f"missing frontmatter terminator: {skill_file}")
-        insert_at = marker + 3
-        additions = ""
-        if "<gsd_agent_plugin_adapter>" not in text:
-            additions += ADAPTER
+        text = inject_after_frontmatter(text, ADAPTER, ADAPTER_MARKER, skill_file)
+        text = inject_after_frontmatter(
+            text, SECURITY_AUTHORIZATION, SECURITY_AUTHORIZATION_MARKER, skill_file
+        )
         if skill_file.parent.name in COMPLETION_SKILLS:
             if OVERLAY_MARKER in text:
                 text = re.sub(
@@ -178,10 +216,34 @@ def inject_runtime_adapters(output: Path, source_prefix: str) -> None:
                     flags=re.DOTALL,
                 )
             else:
-                additions += COMPLETION_GATE
-        if additions:
-            text = text[:insert_at] + "\n\n" + additions + text[insert_at:].lstrip("\n")
+                text = inject_after_frontmatter(text, COMPLETION_GATE, OVERLAY_MARKER, skill_file)
         skill_file.write_text(text)
+
+    for agent_file in sorted((output / "agents").glob("*.md")):
+        text = inject_after_frontmatter(
+            agent_file.read_text(),
+            SECURITY_AUTHORIZATION,
+            SECURITY_AUTHORIZATION_MARKER,
+            agent_file,
+        )
+        agent_file.write_text(text)
+
+    for agent_file in sorted((output / "agents").glob("*.toml")):
+        text = agent_file.read_text()
+        if SECURITY_AUTHORIZATION_MARKER in text:
+            text = re.sub(
+                rf"{re.escape(SECURITY_AUTHORIZATION_MARKER)}.*?</{re.escape(SECURITY_AUTHORIZATION_MARKER[1:])}\n*",
+                SECURITY_AUTHORIZATION,
+                text,
+                count=1,
+                flags=re.DOTALL,
+            )
+        else:
+            boundary = "developer_instructions = '''\n"
+            if boundary not in text:
+                raise SystemExit(f"missing developer_instructions boundary: {agent_file}")
+            text = text.replace(boundary, boundary + SECURITY_AUTHORIZATION, 1)
+        agent_file.write_text(text)
 
 
 def main() -> int:

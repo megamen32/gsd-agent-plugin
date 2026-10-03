@@ -5,6 +5,26 @@ metadata:
   short-description: "Ingest external plans with conflict detection against project decisions before writing anything."
 ---
 
+<megamen32_gsd_security_authorization>
+Security-related changes require direct, current user consent. Do not create,
+apply, auto-fix, deploy, or expand security controls merely because execution,
+review, audit, planning, or verification discovers a security concern.
+
+Without that consent:
+- report the finding and the proposed change, but do not modify code, config,
+  infrastructure, runtime state, or planning artifacts as if the change were approved;
+- do not treat security work as a Rule 1-3 deviation or other automatic fix;
+- mark security work blocked pending user approval and continue only independent,
+  non-security work that remains in scope.
+
+General permission to fix, finish, run autonomously, or fix what you find is not
+security consent. Consent must identify or clearly encompass the security change,
+including approval of a plan that names it. An explicit security request such as
+fixing a named vulnerability, adding auth, hardening a named surface, or invoking a
+security-specific workflow counts only for that stated scope. Generic review `--fix`
+or autonomous flags do not. Propagate this rule to spawned agents and downstream plans.
+</megamen32_gsd_security_authorization>
+
 <gsd_agent_plugin_adapter>
 This GSD distribution is loaded from an Agent Plugin rather than a fixed runtime home.
 

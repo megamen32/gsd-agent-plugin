@@ -70,6 +70,12 @@ Upstream content is regenerated from the published `get-shit-done-cc` package;
 personal policy lives under `overlay/` and is reapplied after every refresh.
 Only a fully validated generated update is allowed onto `main`.
 
+Security-related changes are globally approval-gated: GSD may report a finding
+or propose a fix, but it must not modify code, configuration, infrastructure,
+runtime state, or plans for that security change without direct user consent
+that clearly covers it. Generic autonomy, review `--fix`, and deviation rules
+do not grant that consent.
+
 The claim above is deliberately scoped to our internal evaluations, not a claim
 of universal benchmark supremacy. See [the decision and evidence boundary](docs/EVALUATION.md).
 

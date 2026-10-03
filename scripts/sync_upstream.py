@@ -80,7 +80,7 @@ def update_metadata(root: Path, version: str, npm_meta: dict[str, object]) -> No
         "commit": npm_meta.get("gitHead", ""),
         "npmShasum": npm_meta.get("dist.shasum", ""),
         "profile": "full",
-        "overlay": "megamen32-real-acceptance-v1",
+        "overlay": "megamen32-real-acceptance-security-consent-v2",
     }
     write_json(root / "UPSTREAM.json", upstream)
 

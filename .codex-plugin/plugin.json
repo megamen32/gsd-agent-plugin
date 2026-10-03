@@ -1,17 +1,17 @@
 {
   "name": "gsd",
   "version": "1.42.3",
-  "description": "Portable Agent Plugin distribution of Get Shit Done 1.42.3 with the personal real-surface and focus-group acceptance overlay.",
+  "description": "Megamen32's auto-updating Get Shit Done 1.42.3 distribution with focus-group review and mandatory real-surface acceptance.",
   "author": {
     "name": "TACHES, packaged by megamen32",
     "url": "https://github.com/gsd-build/get-shit-done"
   },
   "skills": "./skills/",
   "interface": {
-    "displayName": "Get Shit Done + Real Acceptance",
-    "shortDescription": "GSD with final real-surface and focus-group gates",
-    "longDescription": "Portable Agent Plugin distribution of Get Shit Done 1.42.3 with the personal real-surface and focus-group acceptance overlay.",
-    "developerName": "TACHES / megamen32 overlay",
+    "displayName": "Megamen32 GSD",
+    "shortDescription": "My GSD with focus groups and real-surface proof",
+    "longDescription": "Megamen32's auto-updating Get Shit Done 1.42.3 distribution with focus-group review and mandatory real-surface acceptance.",
+    "developerName": "megamen32",
     "category": "Productivity",
     "capabilities": [
       "Read",
@@ -20,5 +20,6 @@
     "defaultPrompt": [
       "Use GSD to plan and execute this engineering task."
     ]
-  }
+  },
+  "homepage": "https://github.com/megamen32/gsd-agent-plugin"
 }

@@ -1,10 +1,11 @@
 {
   "name": "gsd",
   "version": "1.42.3",
-  "description": "Portable Agent Plugin distribution of Get Shit Done 1.42.3 with the personal real-surface and focus-group acceptance overlay.",
+  "description": "Megamen32's auto-updating Get Shit Done 1.42.3 distribution with focus-group review and mandatory real-surface acceptance.",
   "author": {
     "name": "TACHES, packaged by megamen32",
     "url": "https://github.com/gsd-build/get-shit-done"
   },
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "homepage": "https://github.com/megamen32/gsd-agent-plugin"
 }

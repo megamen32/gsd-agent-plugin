@@ -44,8 +44,8 @@ def write_json(path: Path, value: object) -> None:
 
 def update_metadata(root: Path, version: str, npm_meta: dict[str, object]) -> None:
     description = (
-        f"Portable Agent Plugin distribution of Get Shit Done {version} with "
-        "the personal real-surface and focus-group acceptance overlay."
+        f"Megamen32's auto-updating Get Shit Done {version} distribution with "
+        "focus-group review and mandatory real-surface acceptance."
     )
     for relative in (
         "plugin.json",
@@ -56,18 +56,20 @@ def update_metadata(root: Path, version: str, npm_meta: dict[str, object]) -> No
         data = json.loads(path.read_text())
         data["version"] = version
         data["description"] = description
+        data["homepage"] = "https://github.com/megamen32/gsd-agent-plugin"
         interface = data.get("interface")
         if isinstance(interface, dict):
-            interface["displayName"] = "Get Shit Done + Real Acceptance"
-            interface["shortDescription"] = "GSD with final real-surface and focus-group gates"
+            interface["displayName"] = "Megamen32 GSD"
+            interface["shortDescription"] = "My GSD with focus groups and real-surface proof"
             interface["longDescription"] = description
-            interface["developerName"] = "TACHES / megamen32 overlay"
+            interface["developerName"] = "megamen32"
         write_json(path, data)
 
     package_path = root / "package.json"
     package = json.loads(package_path.read_text())
     package["version"] = version
     package["description"] = "OpenCode compatibility package for " + description
+    package["homepage"] = "https://github.com/megamen32/gsd-agent-plugin"
     write_json(package_path, package)
 
     upstream = {

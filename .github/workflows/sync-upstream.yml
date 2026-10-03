@@ -29,7 +29,11 @@ jobs:
       - name: Install test runner
         run: python3 -m pip install --disable-pip-version-check "pytest>=8,<9"
       - name: Refresh upstream payload and reapply overlay
-        run: python3 scripts/sync_upstream.py
+        # Force a rebuild even when the version is unchanged. A fresh Actions
+        # checkout intentionally has no ignored node_modules, and the rebuild
+        # is the real canary that the current upstream package still accepts
+        # our overlay before the suite exercises the generated SDK payload.
+        run: python3 scripts/sync_upstream.py --force
       - name: Validate generated package
         run: |
           python3 -m pytest -q

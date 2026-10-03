@@ -6,8 +6,8 @@ offers mid-conversation research when useful, then routes crystallized outputs t
 <required_reading>
 Read all files referenced by the invoking prompt's execution_context before starting.
 
-@/tmp/gsd-npm-codex-stage/get-shit-done/references/questioning.md
-@/tmp/gsd-npm-codex-stage/get-shit-done/references/domain-probes.md
+@$GSD_PLUGIN_ROOT/get-shit-done/references/questioning.md
+@$GSD_PLUGIN_ROOT/get-shit-done/references/domain-probes.md
 </required_reading>
 
 <available_agent_types>

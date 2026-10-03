@@ -3,7 +3,7 @@ Retroactive 6-pillar visual audit of implemented frontend code. Standalone comma
 </purpose>
 
 <required_reading>
-@/tmp/gsd-npm-codex-stage/get-shit-done/references/ui-brand.md
+@$GSD_PLUGIN_ROOT/get-shit-done/references/ui-brand.md
 </required_reading>
 
 <available_agent_types>
@@ -73,7 +73,7 @@ Build file list for auditor:
 Build prompt:
 
 ```markdown
-Read /tmp/gsd-npm-codex-stage/agents/gsd-ui-auditor.md for instructions.
+Read $GSD_PLUGIN_ROOT/agents/gsd-ui-auditor.md for instructions.
 
 <objective>
 Conduct 6-pillar visual audit of Phase {phase_number}: {phase_name}

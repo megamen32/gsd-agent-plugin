@@ -11,10 +11,10 @@ Supports two modes:
 <required_reading>
 Read all files referenced by the invoking prompt's execution_context before starting.
 
-@/tmp/gsd-npm-codex-stage/get-shit-done/references/sketch-theme-system.md
-@/tmp/gsd-npm-codex-stage/get-shit-done/references/sketch-variant-patterns.md
-@/tmp/gsd-npm-codex-stage/get-shit-done/references/sketch-interactivity.md
-@/tmp/gsd-npm-codex-stage/get-shit-done/references/sketch-tooling.md
+@$GSD_PLUGIN_ROOT/get-shit-done/references/sketch-theme-system.md
+@$GSD_PLUGIN_ROOT/get-shit-done/references/sketch-variant-patterns.md
+@$GSD_PLUGIN_ROOT/get-shit-done/references/sketch-interactivity.md
+@$GSD_PLUGIN_ROOT/get-shit-done/references/sketch-tooling.md
 </required_reading>
 
 <process>

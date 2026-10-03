@@ -208,13 +208,13 @@ When `--repair` is active, detect and clean up:
 
 ```bash
 # Check for stale task directories (older than 24 hours)
-TASKS_DIR="/tmp/gsd-npm-codex-stage/tasks"
+TASKS_DIR="$GSD_PLUGIN_ROOT/tasks"
 if [ -d "$TASKS_DIR" ]; then
   STALE_COUNT=$( (find "$TASKS_DIR" -maxdepth 1 -type d -mtime +1 2>/dev/null || true) | wc -l )
   if [ "$STALE_COUNT" -gt 0 ]; then
-    echo "⚠️  Found $STALE_COUNT stale task directories in /tmp/gsd-npm-codex-stage/tasks/"
+    echo "⚠️  Found $STALE_COUNT stale task directories in $GSD_PLUGIN_ROOT/tasks/"
     echo "   These are leftover from crashed subagent sessions."
-    echo "   Run: rm -rf /tmp/gsd-npm-codex-stage/tasks/*  (safe — only affects dead sessions)"
+    echo "   Run: rm -rf $GSD_PLUGIN_ROOT/tasks/*  (safe — only affects dead sessions)"
   fi
 fi
 ```

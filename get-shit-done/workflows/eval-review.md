@@ -5,7 +5,7 @@ Use after $gsd-execute-phase to verify that the evaluation strategy from AI-SPEC
 </purpose>
 
 <required_reading>
-@/tmp/gsd-npm-codex-stage/get-shit-done/references/ai-evals.md
+@$GSD_PLUGIN_ROOT/get-shit-done/references/ai-evals.md
 </required_reading>
 
 <process>
@@ -78,7 +78,7 @@ Build file list for auditor:
 Build prompt:
 
 ```markdown
-Read /tmp/gsd-npm-codex-stage/agents/gsd-eval-auditor.md for instructions.
+Read $GSD_PLUGIN_ROOT/agents/gsd-eval-auditor.md for instructions.
 
 <objective>
 Conduct evaluation coverage audit of Phase {phase_number}: {phase_name}

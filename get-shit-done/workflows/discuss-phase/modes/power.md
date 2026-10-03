@@ -8,7 +8,7 @@
 ## Dispatch
 
 ```
-Read @/tmp/gsd-npm-codex-stage/get-shit-done/workflows/discuss-phase-power.md
+Read @$GSD_PLUGIN_ROOT/get-shit-done/workflows/discuss-phase-power.md
 ```
 
 Execute it end-to-end. Do not continue with the standard interactive steps.

@@ -1,7 +1,7 @@
 {
   "name": "@megamen32/gsd-opencode-plugin",
   "version": "1.42.3",
-  "description": "OpenCode compatibility package for Portable Agent Plugin distribution of Get Shit Done 1.42.3 with the full skill surface and bundled SDK.",
+  "description": "OpenCode compatibility package for Portable Agent Plugin distribution of Get Shit Done 1.42.3 with the personal real-surface and focus-group acceptance overlay.",
   "main": "opencode-plugin/index.js",
   "exports": {
     ".": "./opencode-plugin/index.js"
@@ -14,11 +14,11 @@
     "bin/",
     "get-shit-done/",
     "sdk/",
-    "scripts/",
     "README.md",
     "UPSTREAM.json",
     "VERSION",
-    "LICENSE.upstream"
+    "LICENSE.upstream",
+    "overlay/"
   ],
   "keywords": [
     "opencode",

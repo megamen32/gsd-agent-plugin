@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "gsd",
   "version": "1.42.3",
-  "description": "Portable Agent Plugin distribution of Get Shit Done 1.42.3 with the full skill surface and bundled SDK.",
+  "description": "Portable Agent Plugin distribution of Get Shit Done 1.42.3 with the personal real-surface and focus-group acceptance overlay.",
   "author": {
     "name": "TACHES, packaged by megamen32",
     "url": "https://github.com/gsd-build/get-shit-done"
@@ -18,10 +18,10 @@
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "Get Shit Done",
-    "shortDescription": "GSD planning and engineering workflows",
-    "longDescription": "Full GSD 1.42.3 workflow surface packaged for portable Agent Plugin loaders with its SDK and workflow resources included.",
-    "developerName": "TACHES / megamen32 packaging",
+    "displayName": "Get Shit Done + Real Acceptance",
+    "shortDescription": "GSD with final real-surface and focus-group gates",
+    "longDescription": "Portable Agent Plugin distribution of Get Shit Done 1.42.3 with the personal real-surface and focus-group acceptance overlay.",
+    "developerName": "TACHES / megamen32 overlay",
     "category": "Productivity",
     "capabilities": [
       "Read",

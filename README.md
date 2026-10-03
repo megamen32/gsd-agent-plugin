@@ -1,10 +1,17 @@
 # Get Shit Done Agent Plugin
 
-This is a portable Agent Plugin wrapper for the upstream
-[`get-shit-done-cc`](https://github.com/gsd-build/get-shit-done) 1.42.3 release.
-It keeps the full 67-skill profile, bundled workflows, agent prompts, and SDK in
-one versioned package. The wrapper only adapts install-root resolution and
-named-agent fallback; upstream workflow content is copied from the release.
+This is an auto-updating personal overlay on the upstream
+[`get-shit-done-cc`](https://github.com/gsd-build/get-shit-done) release.
+It keeps the full upstream skill profile, workflows, agent prompts, and SDK,
+then adds one acceptance skill and injects its final gate only into workflows
+that can declare delivery complete. Upstream content stays generated; personal
+policy lives under `overlay/` and is reapplied after every refresh.
+
+The acceptance overlay adds two outcomes without replacing GSD planning or
+UAT: goal-diverse focus groups where they add evidence, and a mandatory final
+canary through the real user/consumer surface. For GUI claims that means the
+actual browser, desktop application, or device with semantic/computer-use
+actions when available—not a health endpoint standing in for the journey.
 
 ## Install
 
@@ -38,8 +45,15 @@ Existing JSON configuration is preserved and backed up under
 `~/.local/state/gsd-agent-plugin/` before it is changed. Restart the runtime or
 start a new session after installation.
 
-Build provenance is recorded in `UPSTREAM.json`. Rebuild from an isolated
-upstream Codex projection with `scripts/build_from_upstream.py`.
+Build provenance is recorded in `UPSTREAM.json`. A daily GitHub workflow runs
+`scripts/sync_upstream.py`, fetches the latest npm release, builds an isolated
+Codex projection, reapplies `overlay/`, validates the full package, and pushes
+only a passing generated update. Manual controls:
+
+```bash
+python3 scripts/sync_upstream.py --check
+python3 scripts/sync_upstream.py --force
+```
 
 `scripts/emit_opencode.py` is a generic Agent Plugins 1.0 to OpenCode emitter.
 It generates the native `opencode-plugin/index.js` compatibility module, the npm

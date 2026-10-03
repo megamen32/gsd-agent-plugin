@@ -88,10 +88,10 @@ if [ -z "$PATCHES_DIR" ]; then
     PATCHES_DIR="$HOME/.opencode/gsd-local-patches"
   elif [ -d "$HOME/.gemini/gsd-local-patches" ]; then
     PATCHES_DIR="$HOME/.gemini/gsd-local-patches"
-  elif [ -d "$HOME/.codex/gsd-local-patches" ]; then
-    PATCHES_DIR="$HOME/.codex/gsd-local-patches"
+  elif [ -d "$GSD_PLUGIN_ROOT/gsd-local-patches" ]; then
+    PATCHES_DIR="$GSD_PLUGIN_ROOT/gsd-local-patches"
   else
-    PATCHES_DIR="/tmp/gsd-npm-codex-stage/gsd-local-patches"
+    PATCHES_DIR="$GSD_PLUGIN_ROOT/gsd-local-patches"
   fi
 fi
 # Local install fallback — check all runtime directories
@@ -217,7 +217,7 @@ When no pristine baseline is available, use these **strengthened heuristics**:
 For each file:
 a. Read both versions completely
 b. Identify ALL differences, then classify each as:
-   - **Mechanical drift** — path substitutions (e.g. `/Users/xxx/.claude/` → `/tmp/gsd-npm-codex-stage/`), variable additions (`${GSD_WS}`, `${AGENT_SKILLS_*}`), error handling additions (`|| true`)
+   - **Mechanical drift** — path substitutions (e.g. `/Users/xxx/.claude/` → `$GSD_PLUGIN_ROOT/`), variable additions (`${GSD_WS}`, `${AGENT_SKILLS_*}`), error handling additions (`|| true`)
    - **User customization** — added steps/sections, removed sections, reordered content, changed behavior, added frontmatter fields, modified instructions
 
 c. **If ANY differences remain after filtering out mechanical drift → those are user customizations. Merge them.**

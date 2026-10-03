@@ -69,7 +69,7 @@ Each item disabled removes its schema from every subsequent turn for the rest of
 
 ### How to toggle
 
-The keys live in `.codex/settings.json` (project) or `/tmp/gsd-npm-codex-stage/settings.json` (global) — **not** in `.planning/config.json`:
+The keys live in `.codex/settings.json` (project) or `$GSD_PLUGIN_ROOT/settings.json` (global) — **not** in `.planning/config.json`:
 
 ```json
 {

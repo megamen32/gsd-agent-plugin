@@ -34,7 +34,7 @@ Claude Code:
 
 ```bash
 claude plugin marketplace add megamen32/megamen32-public-marketplace
-claude plugin install gsd@megamen32-public --scope user
+claude plugin install gsd@megamen32-public-claude --scope user
 ```
 
 ZCode, using its native Agent Plugin support:

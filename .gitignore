@@ -1,4 +1,6 @@
 node_modules/
+.agents/
+package-lock.json
 .pytest_cache/
 __pycache__/
 *.py[cod]

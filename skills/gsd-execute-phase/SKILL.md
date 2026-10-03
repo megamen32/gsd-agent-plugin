@@ -5,6 +5,19 @@ metadata:
   short-description: "Execute all plans in a phase with wave-based parallelization"
 ---
 
+<megamen32_gsd_acceptance_overlay>
+Before this completion-capable workflow reports success, execute the personal
+acceptance overlay:
+
+@../../get-shit-done/workflows/acceptance-gate.md
+
+Unit tests, build output, logs, and GSD verification artifacts support this gate
+but do not replace its final real-surface canary. If the gate returns
+`CHANGES_REQUIRED`, repair the defect and repeat the affected real journey. If
+it returns `BLOCKED_REAL_SURFACE`, report that boundary instead of claiming the
+user-facing result complete.
+</megamen32_gsd_acceptance_overlay>
+
 <megamen32_gsd_security_authorization>
 Security-related changes require direct, current user consent. Do not create,
 apply, auto-fix, deploy, or expand security controls merely because execution,
@@ -37,19 +50,6 @@ This GSD distribution is loaded from an Agent Plugin rather than a fixed runtime
   matching registered agent type, spawn an available generic worker/default agent and
   include the corresponding `agents/<name>.md` prompt in its task message.
 </gsd_agent_plugin_adapter>
-
-<megamen32_gsd_acceptance_overlay>
-Before this completion-capable workflow reports success, execute the personal
-acceptance overlay:
-
-@../../get-shit-done/workflows/acceptance-gate.md
-
-Unit tests, build output, logs, and GSD verification artifacts support this gate
-but do not replace its final real-surface canary. If the gate returns
-`CHANGES_REQUIRED`, repair the defect and repeat the affected real journey. If
-it returns `BLOCKED_REAL_SURFACE`, report that boundary instead of claiming the
-user-facing result complete.
-</megamen32_gsd_acceptance_overlay>
 
 <codex_skill_adapter>
 ## A. Skill Invocation

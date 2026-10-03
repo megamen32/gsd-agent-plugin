@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wire this portable Agent Plugin into OpenCode and/or ZCode."""
+"""Wire this portable Agent Plugin into OpenCode's compatibility layer."""
 
 from __future__ import annotations
 
@@ -69,29 +69,6 @@ def configure_opencode(plugin_root: Path, home: Path) -> Path:
     return path
 
 
-def configure_zcode(plugin_root: Path, home: Path) -> Path:
-    path = home / ".zcode" / "cli" / "config.json"
-    data = load_json(path)
-    plugins = data.get("plugins", {})
-    if not isinstance(plugins, dict):
-        raise SystemExit(f"expected plugins to be a JSON object: {path}")
-
-    root = str(plugin_root)
-    dirs = [value for value in plugins.get("dirs", []) if "/gsd/" not in str(value)]
-    if root not in dirs:
-        dirs.append(root)
-    plugins["dirs"] = dirs
-
-    enabled = plugins.get("enabledPlugins", {})
-    if not isinstance(enabled, dict):
-        raise SystemExit(f"expected enabledPlugins to be a JSON object: {path}")
-    enabled["gsd@inline"] = True
-    plugins["enabledPlugins"] = enabled
-    data["plugins"] = plugins
-    write_json(path, data)
-    return path
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -100,9 +77,7 @@ def main() -> None:
         default=Path(__file__).resolve().parents[1],
         help="Stable checkout path (defaults to this repository).",
     )
-    parser.add_argument(
-        "--runtime", choices=("opencode", "zcode", "all"), default="all"
-    )
+    parser.add_argument("--runtime", choices=("opencode",), default="opencode")
     parser.add_argument("--backup-root", type=Path)
     args = parser.parse_args()
 
@@ -117,24 +92,16 @@ def main() -> None:
     backup_root = (
         args.backup_root or home / ".local" / "state" / "gsd-agent-plugin" / stamp
     ).expanduser()
-    selected = ["opencode", "zcode"] if args.runtime == "all" else [args.runtime]
-    paths = {
-        "opencode": home / ".config" / "opencode" / "opencode.json",
-        "zcode": home / ".zcode" / "cli" / "config.json",
-    }
+    selected = ["opencode"]
+    paths = {"opencode": home / ".config" / "opencode" / "opencode.json"}
     backups = {
         runtime: saved
         for runtime in selected
         if (saved := backup(paths[runtime], backup_root, home)) is not None
     }
 
-    configured = []
-    for runtime in selected:
-        if runtime == "opencode":
-            configure_opencode(plugin_root, home)
-        else:
-            configure_zcode(plugin_root, home)
-        configured.append(runtime)
+    configure_opencode(plugin_root, home)
+    configured = ["opencode"]
 
     print(
         json.dumps(

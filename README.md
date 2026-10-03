@@ -34,19 +34,32 @@ Claude Code:
 
 ```bash
 claude plugin marketplace add megamen32/megamen32-public-marketplace
-claude plugin install gsd@megamen32-public-claude
+claude plugin install gsd@megamen32-public --scope user
 ```
 
-OpenCode and ZCode:
+ZCode, using its native Agent Plugin support:
+
+```bash
+zcode plugins marketplace add megamen32/megamen32-public-marketplace --scope user
+zcode plugins install gsd@megamen32-public-claude --scope user
+```
+
+Hermes, using its native Agent Plugin support:
+
+```bash
+hermes plugins install megamen32/gsd-agent-plugin --ref main --enable --yes-deps
+```
+
+OpenCode is the only supported harness here without native Agent Plugin v1
+installation, so it uses the bundled compatibility adapter:
 
 ```bash
 git clone --depth 1 https://github.com/megamen32/gsd-agent-plugin.git \
   ~/.local/share/gsd-agent-plugin
 npm install --omit=dev --prefix ~/.local/share/gsd-agent-plugin
-python3 ~/.local/share/gsd-agent-plugin/scripts/install_runtime.py --runtime all
+python3 ~/.local/share/gsd-agent-plugin/scripts/install_runtime.py --runtime opencode
 ```
 
-Use `--runtime opencode` or `--runtime zcode` to configure only one runtime.
 Existing JSON configuration is preserved and backed up under
 `~/.local/state/gsd-agent-plugin/`.
 

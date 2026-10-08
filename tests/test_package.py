@@ -69,13 +69,18 @@ def test_sdk_runs_from_a_codex_style_cache_without_root_node_modules(tmp_path: P
     cached = tmp_path / "gsd"
 
     def ignore_root_dependencies(directory: str, _entries: list[str]) -> set[str]:
-        return {"node_modules", ".git", ".pytest_cache", "__pycache__"} if Path(directory) == ROOT else set()
+        # Project-local pytest temp lives under ROOT. Copying it into its own
+        # descendant recursively expands the cache fixture and leaks diagnostics.
+        return {"node_modules", ".git", ".tmp", ".agents", "graphify-out",
+                ".pytest_cache", "__pycache__"} if Path(directory) == ROOT else set()
 
     shutil.copytree(
         ROOT,
         cached,
         ignore=ignore_root_dependencies,
     )
+    # Stop GSD from discovering an unrelated real project in a parent folder.
+    (cached / ".planning").mkdir(exist_ok=True)
     result = subprocess.run(
         ["node", str(cached / "bin/gsd-sdk.js"), "query", "init.progress"],
         check=True,

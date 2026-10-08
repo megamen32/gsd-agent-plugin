@@ -52,6 +52,39 @@ or autonomous flags do not. Propagate this rule to spawned agents and downstream
 """
 
 OVERLAY_MARKER = "<megamen32_gsd_acceptance_overlay>"
+BUSINESS_MARKER = "<megamen32_gsd_business_supervisor>"
+BUSINESS_WRAPPER = """<megamen32_gsd_business_supervisor>
+At workflow entry, anchor the user's requested outcome and its shortest real
+consumer canary in existing context. Before CHOOSING a support-only detour
+(hash packets, coordination, admission, unsolicited security expansion), run the
+business supervisor, before spending another action on that detour.
+Before reporting hashes/SHA, packets, receipts,
+coordination, admission, or security work while that outcome remains unproven,
+automatically run the business supervisor. Also run it after two consecutive
+support-only steps without progress toward the outcome, or before ending with
+any turn-ending response while authorized task work remains. Do not wait for
+user invocation or a "continue" message.
+
+@../../get-shit-done/workflows/business-supervisor.md
+
+The supervisor selects ONE next action; execute it in this same turn, then resume
+the real GSD workflow. Do not turn supervision into another report/review loop.
+Do not end the turn with a checkpoint, partial result, or offer to continue when
+the next authorized action is feasible. End only on the proven requested outcome,
+an explicit user stop/pause, or a concrete blocker with no useful authorized work.
+Keep technical provenance internal unless the user requested it. A genuine
+authorization/resource blocker stays binding; invented gates and unsolicited
+security expansion do not become the task. Propagate these triggers to delegated
+GSD workers; only the lead launches the supervisor, never recursively.
+</megamen32_gsd_business_supervisor>
+
+"""
+# Informational commands do not execute a delivery task. The supervisor must
+# never supervise itself; every other upstream/new workflow gets the wrapper.
+BUSINESS_EXCLUDED_SKILLS = {
+    "gsd-business-supervisor", "gsd-help", "gsd-settings", "gsd-set-profile",
+    "gsd-stats", "gsd-whats-new",
+}
 COMPLETION_SKILLS = {
     "gsd-audit-fix",
     "gsd-autonomous",
@@ -89,6 +122,9 @@ def apply_personal_overlay(output: Path, overlay_root: Path) -> None:
     for relative in (
         Path("skills/gsd-acceptance-gate"),
         Path("get-shit-done/workflows/acceptance-gate.md"),
+        Path("skills/gsd-business-supervisor"),
+        Path("get-shit-done/workflows/business-supervisor.md"),
+        Path("agents/gsd-business-supervisor.md"),
     ):
         src = overlay_root / relative
         dst = output / relative
@@ -217,6 +253,10 @@ def inject_runtime_adapters(output: Path, source_prefix: str) -> None:
                 )
             else:
                 text = inject_after_frontmatter(text, COMPLETION_GATE, OVERLAY_MARKER, skill_file)
+        if skill_file.parent.name not in BUSINESS_EXCLUDED_SKILLS:
+            text = inject_after_frontmatter(
+                text, BUSINESS_WRAPPER, BUSINESS_MARKER, skill_file
+            )
         skill_file.write_text(text)
 
     for agent_file in sorted((output / "agents").glob("*.md")):

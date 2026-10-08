@@ -12,6 +12,7 @@ tests.
 - Full upstream GSD skills, workflows, prompts, and SDK.
 - Focus groups for UX, onboarding, discoverability, and content when varied user goals matter.
 - A mandatory final canary through the real browser, desktop app, device, CLI, API, or delivery path.
+- An automatic business supervisor that interrupts technical-report drift and sends the executor straight back to the requested outcome and its canary.
 - Human-readable notifications and natural Russian TTS by default unless another language was requested.
 - Daily tested upstream updates for Codex, Claude Code, OpenCode, and ZCode.
 
@@ -27,6 +28,15 @@ codex plugin add gsd@megamen32-public
 Start a new Codex session after installation, then use the normal `gsd:*`
 skills. Completion-capable workflows automatically load the personal acceptance
 gate; `gsd:gsd-acceptance-gate` is also available directly.
+
+During an active GSD workflow, choosing a technical-report detour or preparing
+to end a turn with feasible work remaining triggers one short supervisor subagent. It chooses
+one concrete next action and the executor performs it in the same turn, then
+continues upstream GSD without waiting for the user to say "continue".
+Necessary implementation and real authorization/resource
+limits still apply. This is a workflow wrapper, not a background watcher of every
+chat. `gsd:gsd-business-supervisor` can also be invoked directly. The wrapper is
+reapplied by upstream updates.
 
 ## Other harnesses
 

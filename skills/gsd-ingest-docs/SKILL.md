@@ -5,6 +5,31 @@ metadata:
   short-description: "Bootstrap or merge a .planning/ setup from existing ADRs, PRDs, SPECs, and docs in a repo."
 ---
 
+<megamen32_gsd_business_supervisor>
+At workflow entry, anchor the user's requested outcome and its shortest real
+consumer canary in existing context. Before CHOOSING a support-only detour
+(hash packets, coordination, admission, unsolicited security expansion), run the
+business supervisor, before spending another action on that detour.
+Before reporting hashes/SHA, packets, receipts,
+coordination, admission, or security work while that outcome remains unproven,
+automatically run the business supervisor. Also run it after two consecutive
+support-only steps without progress toward the outcome, or before ending with
+any turn-ending response while authorized task work remains. Do not wait for
+user invocation or a "continue" message.
+
+@../../get-shit-done/workflows/business-supervisor.md
+
+The supervisor selects ONE next action; execute it in this same turn, then resume
+the real GSD workflow. Do not turn supervision into another report/review loop.
+Do not end the turn with a checkpoint, partial result, or offer to continue when
+the next authorized action is feasible. End only on the proven requested outcome,
+an explicit user stop/pause, or a concrete blocker with no useful authorized work.
+Keep technical provenance internal unless the user requested it. A genuine
+authorization/resource blocker stays binding; invented gates and unsolicited
+security expansion do not become the task. Propagate these triggers to delegated
+GSD workers; only the lead launches the supervisor, never recursively.
+</megamen32_gsd_business_supervisor>
+
 <megamen32_gsd_security_authorization>
 Security-related changes require direct, current user consent. Do not create,
 apply, auto-fix, deploy, or expand security controls merely because execution,

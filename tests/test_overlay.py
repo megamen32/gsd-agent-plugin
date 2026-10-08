@@ -62,12 +62,50 @@ def test_overlay_reapplies_after_clean_upstream_refresh(tmp_path: Path) -> None:
     assert fast.count("<gsd_agent_plugin_adapter>") == 1
     assert fast.count(build.SECURITY_AUTHORIZATION_MARKER) == 1
     assert fast.count(build.OVERLAY_MARKER) == 1
+    assert fast.count(build.BUSINESS_MARKER) == 1
+    assert fast.index(build.BUSINESS_MARKER) < fast.index(build.OVERLAY_MARKER)
+    assert build.BUSINESS_MARKER not in help_text
+    supervisor_skill = output / "skills/gsd-business-supervisor/SKILL.md"
+    assert supervisor_skill.is_file()
+    assert build.BUSINESS_MARKER not in supervisor_skill.read_text()
+    assert (output / "agents/gsd-business-supervisor.md").is_file()
+    assert (output / "get-shit-done/workflows/business-supervisor.md").is_file()
     assert "@../../get-shit-done/workflows/test.md" in fast
     assert build.OVERLAY_MARKER not in help_text
     assert help_text.count(build.SECURITY_AUTHORIZATION_MARKER) == 1
     assert agent_md.read_text().count(build.SECURITY_AUTHORIZATION_MARKER) == 1
     assert agent_toml.read_text().count(build.SECURITY_AUTHORIZATION_MARKER) == 1
     assert (output / "skills/gsd-acceptance-gate/SKILL.md").is_file()
+
+
+def test_business_wrapper_covers_existing_and_future_workflows(tmp_path: Path) -> None:
+    build = load_build_module()
+    output = tmp_path / "output"
+    for name in ("gsd-execute-phase", "gsd-new-upstream-action", "gsd-help",
+                 "gsd-business-supervisor"):
+        skill = output / "skills" / name / "SKILL.md"
+        skill.parent.mkdir(parents=True)
+        skill.write_text(f'---\nname: "{name}"\n---\n\nOriginal upstream body.\n')
+    build.apply_personal_overlay(output, ROOT / "overlay")
+    build.inject_runtime_adapters(output, "")
+    build.inject_runtime_adapters(output, "")
+    for skill in (output / "skills").glob("*/SKILL.md"):
+        text = skill.read_text()
+        expected = 0 if skill.parent.name in build.BUSINESS_EXCLUDED_SKILLS else 1
+        assert text.count(build.BUSINESS_MARKER) == expected
+    assert "Original upstream body." in (
+        output / "skills/gsd-new-upstream-action/SKILL.md"
+    ).read_text()
+
+
+def test_packaged_supervisor_is_reachable_from_delivery_skills() -> None:
+    build = load_build_module()
+    for skill in (ROOT / "skills").glob("*/SKILL.md"):
+        expected = 0 if skill.parent.name in build.BUSINESS_EXCLUDED_SKILLS else 1
+        assert skill.read_text().count(build.BUSINESS_MARKER) == expected, skill
+    for relative in ("agents/gsd-business-supervisor.md",
+                     "get-shit-done/workflows/business-supervisor.md"):
+        assert (ROOT / relative).is_file()
 
 
 def test_generated_prompt_references_are_plugin_relative(tmp_path: Path) -> None:

@@ -10,6 +10,8 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+from install_runtime import load_json, opencode_path
+
 
 def run(*argv: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(argv, capture_output=True, text=True, timeout=45)
@@ -38,9 +40,9 @@ def main() -> int:
     if run("node", str(root / "bin/gsd-sdk.js"), "--help").returncode:
         failures.append("bundled SDK")
 
-    opencode_cfg = home / ".config/opencode/opencode.json"
+    opencode_cfg = opencode_path(home)
     if opencode_cfg.exists():
-        cfg = json.loads(opencode_cfg.read_text())
+        cfg = load_json(opencode_cfg)
         paths = cfg.get("skills", {}).get("paths", [])
         plugins = cfg.get("plugin", [])
         config_ok = (

@@ -46,3 +46,9 @@ repairs the owning watch lifecycle/budget, preserving all active sessions.
 The fast runner's descendant cleanup was regression-tested red then green:
 a child ignoring TERM is collected while an unrelated process stays running.
 A deliberately exhausted aggregate deadline returns failure, never GREEN.
+
+Installed-cache release initially exposed absent optional SDK dependencies
+(the Codex git plugin route does not run npm install). Installed the existing
+declared dependencies with lifecycle scripts disabled; no package metadata was
+changed. The affected installed SDK case is checked before resumed acceptance.
+Native runtime verification now reads the active JSONC layer too.

@@ -120,6 +120,7 @@ def replace_tree(src: Path, dst: Path) -> None:
 def apply_personal_overlay(output: Path, overlay_root: Path) -> None:
     """Copy additive files that must survive every upstream refresh."""
     for relative in (
+        Path("hooks"),
         Path("skills/gsd-acceptance-gate"),
         Path("get-shit-done/workflows/acceptance-gate.md"),
         Path("skills/gsd-business-supervisor"),
@@ -329,6 +330,8 @@ def main() -> int:
         args.output,
         package_name="@megamen32/gsd-opencode-plugin",
         includes=[
+            "hooks",
+            "scripts",
             "agents",
             "bin",
             "get-shit-done",

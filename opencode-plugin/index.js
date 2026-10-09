@@ -2,4 +2,19 @@
 // Skills are discovered through the static skills.paths config fragment.
 const agentPluginAdapter = async () => ({});
 
-export default agentPluginAdapter;
+
+
+// OGSD: original GSD entry policy, no alternate workflow.
+import { fileURLToPath } from 'node:url';
+const ENTRY = "<ogsd_autoentry>\nOGSD is a thin adapter of the installed original GSD, not another workflow.\nAt the first engineering request, automatically select and read the original GSD skill:\n- trivial change under two minutes: skills/gsd-fast/SKILL.md;\n- bounded change requiring research or verification: skills/gsd-quick/SKILL.md;\n- existing .planning project or continuation: skills/gsd-progress/SKILL.md, then its next upstream route;\n- substantial new project: skills/gsd-new-project/SKILL.md; bug investigation: skills/gsd-debug/SKILL.md.\nResolve these paths below GSD_PLUGIN_ROOT. Do not ask the user to invoke gsd-start.\nPlain questions, translations and status requests need no engineering workflow.\nChoose the shortest original route; keep the existing task and upstream state across turns.\nContinue authorized implementation, relevant checks and delivery to the real consumer result.\nA progress report, unit GREEN, or workflow artifact alone does not complete the task.\nStop only for proven consumer acceptance, explicit user pause, or an evidenced blocker with\nno useful independent authorized work. Do not create sessions, invoke this bootstrap again,\nor supervise the supervisor. This context adds policy; it does not start another agent.\nTests have exactly three categories: fast unit, focused integration, slow nightly.\nEach test/scenario records purpose, detected defect, category, expected and maximum seconds.\nThe combined ordinary release run has a hard 180-second deadline, including setup and checks.\nTimeout, missing summary and incomplete coverage are never GREEN. Fix the defect or speed up\nsetup; move genuinely slow coverage to nightly with a reason, retaining the check.\nNightly uses the existing bounded runner lifecycle and each host's independent finite queue.\nFresh Herder active development means defer before reservation; unknown means defer.\nExclude only the identified own nightly executor, never other development sessions.\nAt the window deadline, clean up only the owned job/reservation, retain results/checkpoint,\nand return the unfinished job to the tail. Never stop foreign work or add a global sole slot.\n</ogsd_autoentry>\n";
+const ROOT = fileURLToPath(new URL('../', import.meta.url));
+const ogsdAdapter = async (ctx) => {
+  const hooks = await agentPluginAdapter(ctx);
+  hooks['experimental.chat.system.transform'] = async (_input, output) => {
+    if (!output.system.some(text => text.includes('<ogsd_autoentry>')))
+      output.system.push('GSD_PLUGIN_ROOT=' + ROOT + '\n' + ENTRY);
+  };
+  return hooks;
+};
+
+export default ogsdAdapter;

@@ -119,6 +119,27 @@ def generated_files(
             "export default agentPluginAdapter;\n"
         )
 
+    autoentry = plugin_root / "hooks/autoentry.md"
+    if autoentry.exists():
+        # A native system hook adds context before the first model request.
+        # It never calls the session client and therefore cannot launch recursively.
+        policy = autoentry.read_text()
+        module += (
+            "\n// OGSD: original GSD entry policy, no alternate workflow.\n"
+            "import { fileURLToPath } from 'node:url';\n"
+            f"const ENTRY = {json.dumps(policy)};\n"
+            "const ROOT = fileURLToPath(new URL('../', import.meta.url));\n"
+            "const ogsdAdapter = async (ctx) => {\n"
+            "  const hooks = await agentPluginAdapter(ctx);\n"
+            "  hooks['experimental.chat.system.transform'] = async (_input, output) => {\n"
+            "    if (!output.system.some(text => text.includes('<ogsd_autoentry>')))\n"
+            "      output.system.push('GSD_PLUGIN_ROOT=' + ROOT + '\\n' + ENTRY);\n"
+            "  };\n"
+            "  return hooks;\n"
+            "};\n"
+        )
+        module = module.replace("export default agentPluginAdapter;", "") + "\nexport default ogsdAdapter;\n"
+
     files = ["opencode-plugin/", "plugin.json"]
     if has_skills:
         files.append(f"{skills_path}/")

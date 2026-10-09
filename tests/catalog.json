@@ -1,0 +1,303 @@
+[
+  {
+    "id": "tests/test_autoentry.py::test_codex_session_start_supplies_original_gsd_route",
+    "pytest": true,
+    "purpose": "Start an engineering session without a manual command",
+    "defect": "Bootstrap fails to load the original GSD entry route",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_autoentry.py::test_opencode_system_hook_is_idempotent_and_never_launches_session",
+    "pytest": true,
+    "purpose": "Supply GSD context before the first OpenCode model request",
+    "defect": "Duplicate policy or recursive session launch",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_autoentry.py::test_codex_bootstrap_preserves_foreign_instructions_and_reinstall",
+    "pytest": true,
+    "purpose": "Install automatic Codex context twice in shared user instructions",
+    "defect": "Installer overwrites foreign policy or duplicates autoentry",
+    "category": "focused integration",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_emit_opencode.py::test_generic_emitter_builds_opencode_npm_projection",
+    "pytest": true,
+    "purpose": "Generate and load a portable plugin with local and remote MCPs",
+    "defect": "Projection loses user override or maps a transport incorrectly",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_emit_opencode.py::test_runtime_configures_native_opencode_shim",
+    "pytest": true,
+    "purpose": "Merge plugin and skill paths in existing configuration",
+    "defect": "Installer overwrites unrelated plugin or skill settings",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_emit_opencode.py::test_generic_emitter_accepts_mcp_only_agent_plugin",
+    "pytest": true,
+    "purpose": "Generate a plugin without a skills directory",
+    "defect": "Emitter rejects supported MCP-only bundles",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_install_runtime.py::test_opencode_install_creates_native_plugin_and_skill_paths",
+    "pytest": true,
+    "purpose": "Install OpenCode compatibility entry and skill discovery",
+    "defect": "OpenCode cannot discover installed GSD",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_install_runtime.py::test_zcode_is_not_handled_by_the_opencode_compatibility_installer",
+    "pytest": true,
+    "purpose": "Reject an unsupported runtime without creating files",
+    "defect": "Compatibility installer mutates a native host",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_install_runtime.py::test_runtime_updates_preserve_unrelated_configuration",
+    "pytest": true,
+    "purpose": "Install into a shared configuration",
+    "defect": "Existing model or foreign plugin disappears",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_install_runtime.py::test_runtime_updates_replace_legacy_gsd_paths",
+    "pytest": true,
+    "purpose": "Upgrade an earlier GSD cache route",
+    "defect": "Two versions load together or stale skills remain",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_overlay.py::test_overlay_is_present_on_completion_skills_only",
+    "pytest": true,
+    "purpose": "Attach consumer acceptance to delivery workflows",
+    "defect": "Completion bypasses real consumer acceptance",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_overlay.py::test_security_authorization_policy_is_present_in_every_skill_and_agent",
+    "pytest": true,
+    "purpose": "Propagate the existing consent policy",
+    "defect": "Regeneration drops existing user-consent policy",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_overlay.py::test_overlay_reapplies_after_clean_upstream_refresh",
+    "pytest": true,
+    "purpose": "Reapply adapter to pristine upstream twice",
+    "defect": "Policy duplicates or disappears on upstream refresh",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_overlay.py::test_business_wrapper_covers_existing_and_future_workflows",
+    "pytest": true,
+    "purpose": "Wrap current and future upstream delivery routes",
+    "defect": "New upstream route omits progress supervision or supervisor recurses",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_overlay.py::test_packaged_supervisor_is_reachable_from_delivery_skills",
+    "pytest": true,
+    "purpose": "Resolve packaged supervisor workflow and prompt",
+    "defect": "Installed delivery references a missing supervisor",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_overlay.py::test_generated_prompt_references_are_plugin_relative",
+    "pytest": true,
+    "purpose": "Load prompts from a portable cache",
+    "defect": "References retain an installation-specific absolute path",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_overlay.py::test_isolated_projection_path_is_removed_from_agent_toml",
+    "pytest": true,
+    "purpose": "Normalize generated Codex agent prompts",
+    "defect": "Prompt points to removed temporary projection",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_overlay.py::test_sdk_query_overlay_is_idempotent",
+    "pytest": true,
+    "purpose": "Apply lazy SDK import adapter twice",
+    "defect": "Read-only query eagerly needs optional execution SDK or duplicates patch",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_overlay.py::test_metadata_versions_follow_upstream_without_hardcoded_test_version",
+    "pytest": true,
+    "purpose": "Update manifest provenance for an arbitrary upstream version",
+    "defect": "Adapter pins a stale upstream version",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_package.py::test_manifests_and_upstream_versions_match",
+    "pytest": true,
+    "purpose": "Compare all runtime manifests with provenance",
+    "defect": "Different hosts load different upstream versions",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_package.py::test_full_skill_surface_is_portable_and_complete",
+    "pytest": true,
+    "purpose": "Validate full original skill surface and references",
+    "defect": "Distribution omits upstream skills or ships broken links",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_package.py::test_bundled_sdk_and_workflows_exist",
+    "pytest": true,
+    "purpose": "Run installed bundled SDK help",
+    "defect": "Missing execution dependencies or CLI cannot start",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_package.py::test_generated_payload_has_no_staging_install_roots",
+    "pytest": true,
+    "purpose": "Scan generated prompt payload for temporary paths",
+    "defect": "Installed runtime points to builder staging directories",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_package.py::test_sdk_runs_from_a_codex_style_cache_without_root_node_modules",
+    "pytest": true,
+    "purpose": "Query from a dependency-free marketplace cache",
+    "defect": "Codex git plugin cannot query project state without npm install",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_package.py::test_generated_opencode_projection_is_present",
+    "pytest": true,
+    "purpose": "Validate generated package entry and skills fragment",
+    "defect": "OpenCode package exports or discovery path drift",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_test_policy.py::test_unclassified_or_missing_coverage_cannot_pass",
+    "pytest": true,
+    "purpose": "Compare collected coverage with declared catalog",
+    "defect": "Unclassified or omitted tests are reported GREEN",
+    "category": "fast unit",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_test_policy.py::test_timeout_is_failure_and_owned_child_is_collected",
+    "pytest": true,
+    "purpose": "Interrupt an overlong owned scenario",
+    "defect": "Timeout is reported GREEN or leaves its child running",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "sdk-help",
+    "command": [
+      "node",
+      "{root}/bin/gsd-sdk.js",
+      "--help"
+    ],
+    "purpose": "Installed bundled CLI starts",
+    "defect": "CLI import or packaging failure",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "compile",
+    "command": [
+      "{python}",
+      "-m",
+      "compileall",
+      "-q",
+      "scripts",
+      "hooks"
+    ],
+    "purpose": "Adapter Python parses",
+    "defect": "Syntax error in shipped adapter",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "diff-check",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "purpose": "Owned patch has no malformed whitespace",
+    "defect": "Malformed patch",
+    "category": "focused integration",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "upstream-refresh",
+    "command": [
+      "{python}",
+      "scripts/sync_upstream.py",
+      "--force",
+      "--version",
+      "1.42.3"
+    ],
+    "purpose": "Rebuild original published payload and reapply overlay",
+    "defect": "Changed upstream installer or overlay shape",
+    "category": "slow nightly",
+    "expected_seconds": 90,
+    "max_seconds": 120,
+    "nightly_reason": "Network, npm install and full upstream projection are not needed for every small adapter release; retained nightly rebuild."
+  }
+]

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
@@ -69,6 +70,21 @@ def configure_opencode(plugin_root: Path, home: Path) -> Path:
     return path
 
 
+def configure_codex_bootstrap(plugin_root: Path, home: Path) -> Path:
+    # Supported user AGENTS bootstrap works even when plugin hooks await trust.
+    # Only this marked block is owned; all existing instructions are preserved.
+    path = home / ".codex/AGENTS.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    text = path.read_text() if path.exists() else ""
+    block = ("<!-- ogsd-autoentry:begin -->\n" + "GSD_PLUGIN_ROOT=" + str(plugin_root)
+             + "\n" + (plugin_root / "hooks/autoentry.md").read_text()
+             + "<!-- ogsd-autoentry:end -->\n")
+    pattern = r"<!-- ogsd-autoentry:begin -->.*?<!-- ogsd-autoentry:end -->\n?"
+    text = re.sub(pattern, lambda _: block, text, flags=re.DOTALL) if "<!-- ogsd-autoentry:begin -->" in text else text.rstrip() + "\n\n" + block
+    path.write_text(text)
+    return path
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -77,7 +93,7 @@ def main() -> None:
         default=Path(__file__).resolve().parents[1],
         help="Stable checkout path (defaults to this repository).",
     )
-    parser.add_argument("--runtime", choices=("opencode",), default="opencode")
+    parser.add_argument("--runtime", choices=("opencode", "codex"), default="opencode")
     parser.add_argument("--backup-root", type=Path)
     args = parser.parse_args()
 
@@ -92,16 +108,20 @@ def main() -> None:
     backup_root = (
         args.backup_root or home / ".local" / "state" / "gsd-agent-plugin" / stamp
     ).expanduser()
-    selected = ["opencode"]
-    paths = {"opencode": home / ".config" / "opencode" / "opencode.json"}
+    selected = [args.runtime]
+    paths = {"opencode": home / ".config" / "opencode" / "opencode.json",
+             "codex": home / ".codex/AGENTS.md"}
     backups = {
         runtime: saved
         for runtime in selected
         if (saved := backup(paths[runtime], backup_root, home)) is not None
     }
 
-    configure_opencode(plugin_root, home)
-    configured = ["opencode"]
+    if args.runtime == "opencode":
+        configure_opencode(plugin_root, home)
+    else:
+        configure_codex_bootstrap(plugin_root, home)
+    configured = [args.runtime]
 
     print(
         json.dumps(

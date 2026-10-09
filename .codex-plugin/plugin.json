@@ -21,5 +21,6 @@
       "Use GSD to plan and execute this engineering task."
     ]
   },
-  "homepage": "https://github.com/megamen32/gsd-agent-plugin"
+  "homepage": "https://github.com/megamen32/gsd-agent-plugin",
+  "hooks": "./hooks/hooks.json"
 }

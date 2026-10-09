@@ -36,10 +36,7 @@ jobs:
         run: python3 scripts/sync_upstream.py --force
       - name: Validate generated package
         run: |
-          python3 -m pytest -q
-          python3 -m py_compile scripts/*.py
-          node bin/gsd-sdk.js --help >/dev/null
-          git diff --check
+          python3 scripts/test_policy.py --mode release
       - name: Commit verified upstream update
         run: |
           if git diff --quiet; then

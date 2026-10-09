@@ -30,5 +30,10 @@
     "defaultPrompt": [
       "Use GSD to plan and execute this engineering task."
     ]
+  },
+  "extensions": {
+    "com.openai": {
+      "hooks": "./hooks/hooks.json"
+    }
   }
 }

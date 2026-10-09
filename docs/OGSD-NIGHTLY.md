@@ -52,3 +52,23 @@ profile. The adapter never raises that profile's resource or wall limits. Fresh
 consumer session checks are excluded from the ordinary small-release run because
 model/provider startup timing is variable; their retained proof is required for
 changes to entry behavior. Native window proof is currently blocked as tracked.
+
+## Existing host-specific observer connection
+
+When the infra owner provides its authoritative native command, use it directly:
+
+~~~text
+python3 scripts/nightly_queue.py tick --host 44 --native-observer /absolute/existing/probe --host 44
+~~~
+
+The observer is an existing infra-owned route, not a new GSD daemon or MCP.
+Place --native-observer last; its remaining arguments are exact argv.
+It has a finite12s observation limit with retained private receipt and uses
+the existing finite-command cleanup. Failure, timeout, partial/truncated state
+or wrong-host data remains UNKNOWN before any reservation.
+
+Its JSON response must include actual host, observed_unix, source, complete
+and sessions with harness/id/status. complete=true means complete fresh native
+coverage on that host; host names must match the exact local HOSTS mapping.
+Never substitute central Herder100's list for44/88 or exclude a development
+session as the own nightly executor.

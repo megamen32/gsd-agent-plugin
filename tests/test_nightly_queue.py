@@ -66,3 +66,35 @@ def test_registered_slow_window_is_not_capped_by_generic_runner_envelope(tmp_pat
     job=dict(id='registered-slow',window_seconds=600,budget={'wall':600},
              runner_path='/existing/bounded-foreground.py',temp_root='/owned/tmp',command=['true'])
     assert queue.enqueue(tmp_path,job)['status']=='QUEUED'
+
+
+def test_native_observer_preserves_host_binding_and_retains_receipt(tmp_path):
+    import sys
+    script="import json,time; print(json.dumps({'host':'foreign','observed_unix':time.time(),'sessions':[],'complete':True,'source':'existing native probe'}))"
+    observation=queue.observe_native('host',[sys.executable,'-c',script],tmp_path)
+    assert queue.classify(observation,'host')=='UNKNOWN'
+    assert any((tmp_path/'observations').glob('*.log'))
+
+
+def test_native_observer_active_result_skips_without_reservation(tmp_path):
+    import sys
+    script="import json,time; print(json.dumps({'host':'host','observed_unix':time.time(),'sessions':[{'harness':'codex','id':'developer','status':'running'}],'complete':True,'source':'existing native probe'}))"
+    observation=queue.observe_native('host',[sys.executable,'-c',script],tmp_path)
+    result=queue.tick(tmp_path,'host',observation,runner=lambda *args: (_ for _ in ()).throw(AssertionError('reserved development host')))
+    assert result['status']=='SKIP_ACTIVE' and result['reservation_created'] is False
+
+
+def test_native_observer_failure_stays_unknown(tmp_path):
+    import sys
+    observation=queue.observe_native('host',[sys.executable,'-c','raise SystemExit(75)'],tmp_path)
+    assert queue.classify(observation,'host')=='UNKNOWN'
+
+
+def test_central_herder_without_host_binding_cannot_prove_remote_free():
+    original_read,original_mcp=queue.read_json_url,queue.fresh_mcp_sessions
+    try:
+        queue.read_json_url=lambda *args:{'sessions':[]}
+        queue.fresh_mcp_sessions=lambda *args:{'sessions':[],'total':0,'limited':False}
+        assert queue.classify(queue.observe('remote44','http://central100'),'remote44')=='UNKNOWN'
+    finally:
+        queue.read_json_url,queue.fresh_mcp_sessions=original_read,original_mcp

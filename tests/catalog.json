@@ -398,5 +398,41 @@
     "category": "focused integration",
     "expected_seconds": 0.3,
     "max_seconds": 5
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_native_observer_preserves_host_binding_and_retains_receipt",
+    "pytest": true,
+    "purpose": "Read native host-specific state from the existing infra observer",
+    "defect": "Central snapshot is relabelled as another host or evidence is discarded",
+    "category": "focused integration",
+    "expected_seconds": 0.4,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_native_observer_active_result_skips_without_reservation",
+    "pytest": true,
+    "purpose": "Use fresh observer development state before reservation",
+    "defect": "Nightly books a developer host",
+    "category": "focused integration",
+    "expected_seconds": 0.4,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_native_observer_failure_stays_unknown",
+    "pytest": true,
+    "purpose": "Reject an unsuccessful existing native probe",
+    "defect": "Observer failure is falsely treated as free",
+    "category": "focused integration",
+    "expected_seconds": 0.4,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_central_herder_without_host_binding_cannot_prove_remote_free",
+    "pytest": true,
+    "purpose": "Require native observation to identify its actual host",
+    "defect": "Central Herder100 is falsely used to book remote44/88",
+    "category": "fast unit",
+    "expected_seconds": 0.4,
+    "max_seconds": 5
   }
 ]

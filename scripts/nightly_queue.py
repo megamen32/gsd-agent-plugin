@@ -95,13 +95,41 @@ def observe(host, endpoint, own_executor=None):
             fresh=fresh_mcp_sessions(endpoint)
             result['sessions']=[{k:r[k] for k in ('harness','id','status')} for r in fresh['sessions']]
             result['observed_unix']=time.time()
-            result['complete']=fresh.get('limited') is False and fresh.get('total')==len(fresh['sessions'])
+            result['complete']=(fresh.get('host')==host and fresh.get('limited') is False
+                                and fresh.get('total')==len(fresh['sessions']))
             result['source']='Herder MCP list_agents native discovery'
             if not result['complete']:
-                result['reason']='Native session discovery is truncated; complete free-host proof unavailable'
+                result['reason']='Native discovery lacks complete host-bound free-host proof'
     except Exception as error:
         result['reason']='Herder native observation unavailable: '+type(error).__name__
     return result
+
+
+def observe_native(host, command, state_dir):
+    """Call the infra-owned existing native observer, with retained finite evidence."""
+    unknown={'host':host,'observed_unix':time.time(),'sessions':[],'complete':False}
+    log=state_dir/'observations'/(uuid.uuid4().hex+'.log')
+    log.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
+    log.touch(mode=0o600)
+    try:
+        if not command or not all(isinstance(x,str) for x in command):
+            raise ValueError('exact existing observer argv required')
+        path=Path(__file__).with_name('test_policy.py')
+        spec=importlib.util.spec_from_file_location('ogsd_existing_finite_command',path)
+        policy=importlib.util.module_from_spec(spec);spec.loader.exec_module(policy)
+        code,timed_out=policy.execute(command,state_dir,12,log)
+        if code or timed_out or log.stat().st_size>65536:
+            raise ValueError('native observer failed, timed out or oversized')
+        result=json.loads(log.read_text())
+        if not isinstance(result,dict) or not result.get('source'):
+            raise ValueError('native observation source required')
+        # Preserve returned host/timestamp. Never relabel a central snapshot.
+        result['receipt']=str(log)
+        return result
+    except Exception as error:
+        unknown['reason']='Native observer unavailable: '+type(error).__name__
+        unknown['receipt']=str(log)
+        return unknown
 
 
 def existing_runner(job, result_path):
@@ -212,6 +240,8 @@ def main():
     parser.add_argument('--job',type=Path)
     parser.add_argument('--herder',default='http://127.0.0.1:18787')
     parser.add_argument('--own-executor',nargs=2,metavar=('HARNESS','SESSION_ID'))
+    parser.add_argument('--native-observer',nargs=argparse.REMAINDER,
+                        help='Existing infra-owned observer argv; must be the last option')
     args=parser.parse_args()
     host=HOSTS[args.host]
     if socket.gethostname()!=host:raise SystemExit('exact local host identity required')
@@ -219,7 +249,10 @@ def main():
     if args.action=='enqueue':result=enqueue(state_dir,json.loads(args.job.read_text()))
     elif args.action=='status':
         path=state_dir/'queue.json';result=json.loads(path.read_text()) if path.exists() else {'pending':[],'running':None,'completed':[]}
-    else:result=tick(state_dir,host,observe(host,args.herder,args.own_executor),own_executor=args.own_executor)
+    else:
+        observation=(observe_native(host,args.native_observer,state_dir) if args.native_observer
+                     else observe(host,args.herder,args.own_executor))
+        result=tick(state_dir,host,observation,own_executor=args.own_executor)
     print(json.dumps(result))
     return 0
 

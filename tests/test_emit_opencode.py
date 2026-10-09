@@ -25,7 +25,6 @@ def make_agent_plugin(tmp_path: Path) -> Path:
                 "name": "demo",
                 "version": "2.3.4",
                 "description": "Demo portable plugin",
-                "skills": "./skills/",
             }
         )
     )

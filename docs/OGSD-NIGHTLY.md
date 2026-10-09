@@ -17,12 +17,17 @@ Use 44 and 88 on those hosts. Their state defaults independently to
 nightly executor; never pass a development session as that exemption.
 
 Job fields: stable safe `id`, exact `command` argv, existing `runner_path`
-ending in bounded-foreground.py, finite `budget`, absolute `temp_root`, finite
+ending in bounded-foreground.py, explicit registered profile, exact numeric
+budget, enduring authorized_case_path, absolute temp_root, finite
 `window_seconds` (finite, at most one day; stock runner profile validates the actual wall budget), optional `temp_symlinks` and `admission_receipt`.
 The existing helper validates budget and admission and enforces native controls.
-Budget wall must fit the window. A registered profile may be carried as the
-helper's explicit `_profile` budget value; its pinned fresh admission still
-comes from the infrastructure owner's existing route.
+Budget wall must fit the window. Numeric job JSON stays identical to the registered budget. At the existing
+helper budget boundary, the adapter adds internal _profile from job.profile
+and validates the exact enduring case. Execution goes exclusively through
+run_authorized_case(case_path,0), which creates fresh admission immediately
+before payload. Missing/mismatched profile or case is HELD before reservation;
+there is no bare-budget path. Stock own-generation cleanup plus absence of
+the own capacity ledger row are required before tail requeue.
 
 Results and checkpoints remain under the host queue's `results/`. A failed,
 held or timed-out job returns to the tail only after stock owned-cleanup proof
@@ -72,3 +77,10 @@ and sessions with harness/id/status. complete=true means complete fresh native
 coverage on that host; host names must match the exact local HOSTS mapping.
 Never substitute central Herder100's list for44/88 or exclude a development
 session as the own nightly executor.
+
+
+Published profile: gsd-nightly-window100, registered by infrastructure commit
+8064174. This is the100 profile only; no portable44/88 profile is implied.
+100/44 active and88 incomplete native coverage defer before reservation.
+The GSD engineering session is not an executor exemption. The approved native
+case remains pending until actual FREE through the enduring observer/runner.

@@ -98,3 +98,45 @@ def test_central_herder_without_host_binding_cannot_prove_remote_free():
         assert queue.classify(queue.observe('remote44','http://central100'),'remote44')=='UNKNOWN'
     finally:
         queue.read_json_url,queue.fresh_mcp_sessions=original_read,original_mcp
+
+
+def test_existing_runner_keeps_profile_and_uses_enduring_authorized_route(tmp_path):
+    helper=tmp_path/'bounded-foreground.py'
+    helper.write_text("""
+import json
+from pathlib import Path
+LAST_RUN=None
+class Held(Exception):pass
+def budget(value):
+    assert value.get('_profile')=='accepted-profile', 'profile lost at budget boundary'
+    assert {k:v for k,v in value.items() if k!='_profile'}=={'wall':1}, 'budget changed'
+    return value
+def authorized_case(path):
+    case=json.loads(Path(path).read_text())
+    return case,budget(dict(case['budget'],_profile=case['profile']))
+def reserve_scope(info):pass
+def clear_reservation(info):pass
+def run(*args):raise AssertionError('bare budget route used')
+def run_authorized_case(path,wait):
+    global LAST_RUN
+    case=json.loads(Path(path).read_text())
+    info=dict(unit='own',cgroup='own',invocation='one',inode=1,pid=123,start='1')
+    reserve_scope(info)
+    clear_reservation(info)
+    LAST_RUN={'same_generation_cleanup':True}
+    return 0
+""")
+    case=tmp_path/'case.json'
+    job=dict(profile='accepted-profile',budget={'wall':1},window_seconds=2,
+             command=['true'],temp_root=str(tmp_path),runner_path=str(helper),authorized_case_path=str(case))
+    case.write_text(json.dumps(dict(profile=job['profile'],budget=job['budget'],command=job['command'],temp_root=job['temp_root'])))
+    result=queue.existing_runner(job,tmp_path/'result.json')
+    assert result['status']=='PASS' and result['cleanup_verified'] is True
+    assert result['profile']=='accepted-profile'
+
+
+def test_bare_budget_cannot_reserve_without_enduring_authorized_case(tmp_path):
+    helper=tmp_path/'bounded-foreground.py'
+    helper.write_text("raise AssertionError('unapproved helper entered')")
+    result=queue.existing_runner(dict(runner_path=str(helper),budget={'wall':1},window_seconds=1),tmp_path/'result.json')
+    assert result['status']=='HELD' and result['reservation_started'] is False

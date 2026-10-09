@@ -174,7 +174,9 @@ def test_metadata_versions_follow_upstream_without_hardcoded_test_version(tmp_pa
         path = tmp_path / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(
-            json.dumps({"version": "old", "description": "old", "homepage": "old"})
+            json.dumps({"version": "old", "description": "old", "homepage": "old",
+                        **({"extensions": {"com.openai": {"interface": {"longDescription": "old"}}}}
+                           if relative == "plugin.json" else {"interface": {"longDescription": "old"}})})
         )
     (tmp_path / "package.json").write_text(json.dumps({"version": "old"}))
 
@@ -185,6 +187,9 @@ def test_metadata_versions_follow_upstream_without_hardcoded_test_version(tmp_pa
     )
 
     plugin = json.loads((tmp_path / "plugin.json").read_text())
+    assert plugin["extensions"]["com.openai"]["interface"]["longDescription"].startswith(
+        "Megamen32's auto-updating Get Shit Done 9.8.7")
+    assert "interface" not in plugin
     assert plugin["version"] == "9.8.7"
     assert plugin["description"].startswith("Megamen32's auto-updating Get Shit Done 9.8.7")
     assert plugin["homepage"] == "https://github.com/megamen32/gsd-agent-plugin"

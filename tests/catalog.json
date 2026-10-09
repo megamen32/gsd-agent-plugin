@@ -434,5 +434,32 @@
     "category": "fast unit",
     "expected_seconds": 0.4,
     "max_seconds": 5
+  },
+  {
+    "id": "tests/test_package.py::test_agent_plugin_manifest_uses_only_portable_schema_fields",
+    "pytest": true,
+    "purpose": "Keep one gsd identity in the official Agent Plugin1.0 manifest with vendor fields in extensions",
+    "defect": "Portable manifest rejects unsupported top-level skills/interface or identity/source is renamed",
+    "category": "fast unit",
+    "expected_seconds": 0.2,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_existing_runner_keeps_profile_and_uses_enduring_authorized_route",
+    "pytest": true,
+    "purpose": "Preserve the registered profile and delegate to the stock enduring authorized case",
+    "defect": "Profile is dropped or queued work uses legacy bare-budget admission",
+    "category": "focused integration",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_bare_budget_cannot_reserve_without_enduring_authorized_case",
+    "pytest": true,
+    "purpose": "Defer unregistered numeric jobs before entering the runner",
+    "defect": "Bare budget enters or reserves despite missing enduring authorization",
+    "category": "focused integration",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
   }
 ]

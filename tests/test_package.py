@@ -102,3 +102,15 @@ def test_generated_opencode_projection_is_present():
     assert fragment["skills"]["paths"] == [
         "node_modules/@megamen32/gsd-opencode-plugin/skills"
     ]
+
+
+def test_agent_plugin_manifest_uses_only_portable_schema_fields():
+    schema=json.loads((ROOT/'tests/fixtures/agent-plugin-1.0.schema.json').read_text())
+    manifest=json.loads((ROOT/'plugin.json').read_text())
+    assert set(manifest)<=set(schema['properties']), 'vendor fields belong in extensions'
+    assert set(schema['required'])<=set(manifest)
+    assert manifest['name']=='gsd'
+    assert manifest['repository']=='https://github.com/megamen32/gsd-agent-plugin'
+    extension=manifest['extensions']['com.openai']
+    assert extension['skills']=='./skills/'
+    assert extension['interface']==json.loads((ROOT/'.codex-plugin/plugin.json').read_text())['interface']

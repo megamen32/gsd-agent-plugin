@@ -133,42 +133,75 @@ def observe_native(host, command, state_dir):
 
 
 def existing_runner(job, result_path):
-    """Add observability to stock lifecycle; no new admission or process killer."""
-    source = Path(job['runner_path']).resolve()
-    if source.name != 'bounded-foreground.py':
+    """Delegate the enduring approved case to the stock lifecycle, never bare budget."""
+    receipt={'status':'HELD','cleanup_verified':False,'reservation_started':False}
+    if not job.get('profile') or not job.get('authorized_case_path'):
+        receipt['reason']='Registered profile and enduring authorized case required'
+        write(result_path,receipt)
+        return receipt
+    source=Path(job['runner_path']).resolve()
+    if source.name!='bounded-foreground.py':
         raise ValueError('existing bounded foreground runner required')
-    spec = importlib.util.spec_from_file_location('ogsd_existing_foreground', source)
-    helper = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(helper)
-    budget = helper.budget(job['budget'])
-    if budget['wall'] > job['window_seconds']:
-        raise ValueError('runner wall must fit finite nightly window')
-    receipt = {'status':'INCOMPLETE','cleanup_verified':False,'reservation_started':False}
-    reserve, clear = helper.reserve_scope, helper.clear_reservation
+    spec=importlib.util.spec_from_file_location('ogsd_existing_foreground',source)
+    helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
+    case_path=Path(job['authorized_case_path'])
+    try:
+        if '_profile' in job['budget']:
+            raise helper.Held('Job budget must remain exact numeric registered budget')
+        budget=helper.budget(dict(job['budget'],_profile=job['profile']))
+        case,case_budget=helper.authorized_case(case_path)
+        if (case['profile']!=job['profile'] or case['budget']!=job['budget']
+                or case['command']!=job['command'] or case['temp_root']!=job['temp_root']):
+            raise helper.Held('Enduring case does not match exact queued job')
+        if budget['wall']>job['window_seconds']:
+            raise helper.Held('Runner wall must fit finite nightly window')
+    except helper.Held as error:
+        receipt['reason']=str(error);write(result_path,receipt)
+        return receipt
+    receipt.update(status='INCOMPLETE',profile=job['profile'],authorized_case_path=str(case_path))
+    reserve,clear=helper.reserve_scope,helper.clear_reservation
     def record_reserve(info):
         receipt['reservation_started']=True
         receipt['generation']={k:info[k] for k in ('unit','cgroup','invocation','inode','pid','start')}
+        capacity=getattr(helper,'CAPACITY',None)
+        if capacity:receipt['capacity_id']=capacity['id']
         write(result_path,receipt)
         return reserve(info)
     def record_clear(info):
-        # Stock helper calls clear only after same-generation empty/gone proof.
-        clear(info)
+        clear(info)  # Stock same-generation empty/gone proof precedes this call.
         receipt['cleanup_verified']=True
         write(result_path,receipt)
-    helper.reserve_scope,helper.clear_reservation = record_reserve,record_clear
+    helper.reserve_scope,helper.clear_reservation=record_reserve,record_clear
     write(result_path,receipt)
     try:
-        code = helper.run(budget,Path(job['temp_root']),job['command'],
-                          job.get('temp_symlinks','deny'),
-                          Path(job['admission_receipt']) if job.get('admission_receipt') else None)
+        # Fresh admission is created by the existing route immediately before
+        # payload. No stale queued receipt and no extra resource-wait window.
+        code=helper.run_authorized_case(case_path,0)
         receipt['status']='PASS' if code==0 else 'FAIL'
         receipt['returncode']=code
-        if helper.LAST_RUN:receipt['native']=helper.LAST_RUN
+        if helper.LAST_RUN:
+            receipt['native']=helper.LAST_RUN
+        elif code==0:
+            # The stock route already validated a completed once-only case.
+            completed=case_path.parent/('completed-'+helper.profiles.digest(case_path)+'.json')
+            prior=json.loads(completed.read_text())
+            receipt.update(native=prior,cleanup_verified=prior['same_generation_cleanup'],reused=True)
     except helper.Held as error:
         reason=str(error)
         receipt['status']='TIMEOUT' if 'wall deadline' in reason else 'FAIL' if receipt['reservation_started'] else 'HELD'
         receipt['reason']=reason
     finally:
+        current=getattr(helper,'CAPACITY',None)
+        if current and not receipt.get('capacity_id'):
+            receipt['capacity_id']=current['id'];receipt['reservation_started']=True
+        if receipt.get('capacity_id'):
+            try:
+                with helper.capacity_transaction() as rows:
+                    removed=not any(row['request']['id']==receipt['capacity_id'] for row in rows)
+                receipt['reservation_removed']=removed
+                receipt['cleanup_verified']=receipt['cleanup_verified'] and removed
+            except Exception:
+                receipt['cleanup_verified']=False
         write(result_path,receipt)
     return receipt
 

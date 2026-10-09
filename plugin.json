@@ -16,24 +16,24 @@
     "engineering",
     "planning"
   ],
-  "skills": "./skills/",
-  "interface": {
-    "displayName": "Megamen32 GSD",
-    "shortDescription": "My GSD with focus groups and real-surface proof",
-    "longDescription": "Megamen32's auto-updating Get Shit Done 1.42.3 distribution with focus-group review and mandatory real-surface acceptance.",
-    "developerName": "megamen32",
-    "category": "Productivity",
-    "capabilities": [
-      "Read",
-      "Write"
-    ],
-    "defaultPrompt": [
-      "Use GSD to plan and execute this engineering task."
-    ]
-  },
   "extensions": {
     "com.openai": {
-      "hooks": "./hooks/hooks.json"
+      "hooks": "./hooks/hooks.json",
+      "skills": "./skills/",
+      "interface": {
+        "displayName": "Megamen32 GSD",
+        "shortDescription": "My GSD with focus groups and real-surface proof",
+        "longDescription": "Megamen32's auto-updating Get Shit Done 1.42.3 distribution with focus-group review and mandatory real-surface acceptance.",
+        "developerName": "megamen32",
+        "category": "Productivity",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "defaultPrompt": [
+          "Use GSD to plan and execute this engineering task."
+        ]
+      }
     }
   }
 }

@@ -57,3 +57,17 @@ real cycle runs on a confirmed free host through that route.
 Private preserved receipts: .tmp/ogsd/fleet-delivery/receipt.json.
 Per-host backup/verification receipts:
 ~/.local/state/gsd-agent-plugin/fleet-delivery-20261009/.
+
+## Agent Plugin identity and format follow-up
+
+88 and Mac each have exactly one enabled gsd@megamen32-public, one owned
+Codex bootstrap and one OpenCode plugin/bootstrap entry. No separate OGSD
+package or duplicate active registration was found. Root independently
+confirmed the same single identity on100/44.
+
+Full validation against the published Agent Plugins1.0 schema found inherited
+top-level skills/interface fields in39f03598 and current manifest. They now
+live under extensions.com.openai, retaining gsd,1.42.3, the same source and
+Codex compatibility manifest. The standard JSON Schema validator reports zero
+errors against the retrieved official schema. New regression coverage keeps
+future metadata updates in the valid extension location.

@@ -57,7 +57,7 @@ def update_metadata(root: Path, version: str, npm_meta: dict[str, object]) -> No
         data["version"] = version
         data["description"] = description
         data["homepage"] = "https://github.com/megamen32/gsd-agent-plugin"
-        interface = data.get("interface")
+        interface = data.get("extensions", {}).get("com.openai", {}).get("interface", data.get("interface"))
         if isinstance(interface, dict):
             interface["displayName"] = "Megamen32 GSD"
             interface["shortDescription"] = "My GSD with focus groups and real-surface proof"

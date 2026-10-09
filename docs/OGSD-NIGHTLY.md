@@ -18,7 +18,7 @@ nightly executor; never pass a development session as that exemption.
 
 Job fields: stable safe `id`, exact `command` argv, existing `runner_path`
 ending in bounded-foreground.py, finite `budget`, absolute `temp_root`, finite
-`window_seconds` (1..120), optional `temp_symlinks` and `admission_receipt`.
+`window_seconds` (finite, at most one day; stock runner profile validates the actual wall budget), optional `temp_symlinks` and `admission_receipt`.
 The existing helper validates budget and admission and enforces native controls.
 Budget wall must fit the window. A registered profile may be carried as the
 helper's explicit `_profile` budget value; its pinned fresh admission still
@@ -36,3 +36,19 @@ stays TIMEOUT, is owned repair work, and is retained for the next queue window.
 The ordinary release covers fast unit and focused integration in <=180s.
 
 Current native dependencies and evidence: [delivery tracker](OGSD-DELIVERY.md).
+
+## Consumer acceptance scenarios
+
+| Scenario | Purpose | Detected defect | Category | Expected / max seconds |
+|---|---|---|---|---|
+| Fresh Codex engineering session | Read original GSD automatically and verify owned temporary file | Manual entry required, recursive start, or unverified consumer result | slow nightly | 60 / 180 |
+| Fresh OpenCode engineering session | Load original GSD through native config and verify temporary file | JSONC override hides plugin/bootstrap or entry route is ignored | slow nightly | 60 / 180 |
+| Live busy-host tick | Native Herder active read then skip before reservation | Nightly books a development host | focused integration | 2 / 12 |
+| Unknown44/88 tick | Defer when native activity cannot be observed | Unreachable host is falsely marked free | focused integration | 1 / 12 |
+| Native window cleanup | Existing runner terminates owned generation, clears own reserve, retains checkpoint, requeues tail | Foreign stop, leaked reservation, replay or false GREEN | slow nightly | profile-specific / finite reviewed profile wall plus stock cleanup |
+
+A scenario that needs a longer window uses an already accepted registered runner
+profile. The adapter never raises that profile's resource or wall limits. Fresh
+consumer session checks are excluded from the ordinary small-release run because
+model/provider startup timing is variable; their retained proof is required for
+changes to entry behavior. Native window proof is currently blocked as tracked.

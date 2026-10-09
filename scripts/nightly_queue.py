@@ -187,7 +187,7 @@ def tick(state_dir, host, observation, runner=existing_runner, own_executor=None
 
 def enqueue(state_dir, job):
     if not re.fullmatch(r'[a-zA-Z0-9_-]{1,80}',job.get('id','')):raise ValueError('safe stable job id required')
-    if type(job.get('window_seconds')) is not int or not 1<=job['window_seconds']<=120:raise ValueError('finite 1..120 second window required')
+    if type(job.get('window_seconds')) is not int or not 1<=job['window_seconds']<=86400:raise ValueError('finite nightly window of at most one day required')
     if not job.get('command') or not all(isinstance(x,str) for x in job['command']):raise ValueError('exact command required')
     if not job.get('budget') or not job.get('runner_path') or not job.get('temp_root'):raise ValueError('existing runner, budget and temporary lease root required')
     if not Path(job['runner_path']).is_absolute() or not Path(job['temp_root']).is_absolute():raise ValueError('absolute existing runner and temporary lease root required')

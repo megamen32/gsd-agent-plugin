@@ -60,3 +60,9 @@ def test_host_queues_are_independent(tmp_path):
     assert queue.tick(tmp_path/'100','host',obs)['status']=='CLEANUP_PENDING'
     assert queue.tick(tmp_path/'44','host',obs)['status']=='EMPTY'
     assert queue.tick(tmp_path/'88','host',obs)['status']=='EMPTY'
+
+
+def test_registered_slow_window_is_not_capped_by_generic_runner_envelope(tmp_path):
+    job=dict(id='registered-slow',window_seconds=600,budget={'wall':600},
+             runner_path='/existing/bounded-foreground.py',temp_root='/owned/tmp',command=['true'])
+    assert queue.enqueue(tmp_path,job)['status']=='QUEUED'

@@ -380,5 +380,14 @@
     "category": "focused integration",
     "expected_seconds": 0.4,
     "max_seconds": 5
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_registered_slow_window_is_not_capped_by_generic_runner_envelope",
+    "pytest": true,
+    "purpose": "Queue a finite slow window already supported by a registered runner profile",
+    "defect": "Adapter forces every accepted slow profile into generic 120-second envelope",
+    "category": "fast unit",
+    "expected_seconds": 0.2,
+    "max_seconds": 5
   }
 ]

@@ -152,3 +152,17 @@ def test_active_jsonc_override_gets_autoentry_and_preserves_strings(tmp_path):
     assert cfg['plugin']==['foreign',str(ROOT/'opencode-plugin/index.js')]
     assert cfg['instructions']==['/policy.md',str(home/'.config/opencode/ogsd-bootstrap.md')]
     assert json.loads((path.parent/'opencode.json').read_text())['model']=='shadowed/model'
+
+
+def test_install_preserves_foreign_workflow_plugins_and_config_mode(tmp_path):
+    home=tmp_path/'home'
+    path=home/'.config/opencode/opencode.json'
+    path.parent.mkdir(parents=True)
+    foreign=['file:///foreign/lhc-time-guard.ts','last-human-commit@foreign','other']
+    path.write_text(json.dumps({'plugin':foreign,'model':'preserve/model'}))
+    path.chmod(0o600)
+    env={**os.environ,'HOME':str(home)}
+    subprocess.run([sys.executable,str(INSTALLER),'--plugin-root',str(ROOT)],env=env,check=True,capture_output=True)
+    cfg=json.loads(path.read_text())
+    assert cfg['plugin']==foreign+[str(ROOT/'opencode-plugin/index.js')]
+    assert path.stat().st_mode & 0o777 == 0o600

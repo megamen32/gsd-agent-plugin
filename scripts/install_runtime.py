@@ -5,6 +5,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import stat
+import tempfile
 import re
 import shutil
 from datetime import datetime, timezone
@@ -29,9 +32,16 @@ def load_json(path: Path) -> dict:
 
 def write_json(path: Path, data: dict) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
-    temporary.replace(path)
+    mode = stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o600
+    with tempfile.NamedTemporaryFile(mode="w", dir=path.parent,
+                                     prefix=path.name + ".ogsd-", delete=False) as output:
+        temporary = Path(output.name)
+        os.chmod(temporary, mode)
+        output.write(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+    try:
+        temporary.replace(path)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def backup(path: Path, backup_root: Path, home: Path) -> str | None:
@@ -62,9 +72,7 @@ def configure_opencode(plugin_root: Path, home: Path) -> Path:
         for value in data.get("plugin", [])
         if value == shim
         or not (
-            "last-human-commit" in str(value)
-            or "/lhc-" in str(value)
-            or "/gsd/" in str(value)
+            "/gsd/" in str(value)
             or "/gsd-agent-plugin/" in str(value)
             or "@megamen32/gsd-opencode-plugin" in str(value)
         )

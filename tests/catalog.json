@@ -389,5 +389,14 @@
     "category": "fast unit",
     "expected_seconds": 0.2,
     "max_seconds": 5
+  },
+  {
+    "id": "tests/test_install_runtime.py::test_install_preserves_foreign_workflow_plugins_and_config_mode",
+    "pytest": true,
+    "purpose": "Install OGSD while retaining all foreign plugins and original config permissions",
+    "defect": "Installer removes foreign workflow plugins or changes protected file mode",
+    "category": "focused integration",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
   }
 ]

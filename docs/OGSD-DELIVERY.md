@@ -16,8 +16,9 @@ remain outside this change boundary. Their releases do not wait for OGSD.
 OpenCode defect found and repaired within GSD installer: existing
 `opencode.jsonc` overrides the plugin/instruction arrays in `opencode.json`.
 The installer now writes the active JSONC layer, preserves setting values and
-backs up the original file. It replaces old GSD paths, removes obsolete LHC
-workflow hooks, and wires the native plugin plus supported instruction bootstrap.
+backs up the original file. It replaces only old GSD paths and wires the native plugin plus supported
+instruction bootstrap. Foreign workflow plugins are preserved. Existing config
+file permissions are retained during atomic replacement.
 
 Queue adapter: `scripts/nightly_queue.py`. It calls the existing runner in the
 same native executor session, reuses admission, reservations, same-generation

@@ -291,7 +291,7 @@
       "scripts/sync_upstream.py",
       "--force",
       "--version",
-      "1.42.3"
+      "{upstream_version}"
     ],
     "purpose": "Rebuild original published payload and reapply overlay",
     "defect": "Changed upstream installer or overlay shape",
@@ -299,5 +299,86 @@
     "expected_seconds": 90,
     "max_seconds": 120,
     "nightly_reason": "Network, npm install and full upstream projection are not needed for every small adapter release; retained nightly rebuild."
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_active_development_skips_before_runner_or_reservation",
+    "pytest": true,
+    "purpose": "Check fresh active development before any booking",
+    "defect": "Nightly reserves a host occupied by a developer",
+    "category": "fast unit",
+    "expected_seconds": 0.2,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_unknown_stale_and_partial_are_never_free",
+    "pytest": true,
+    "purpose": "Reject stale partial or unavailable observation",
+    "defect": "Unknown host is falsely treated as free",
+    "category": "fast unit",
+    "expected_seconds": 0.2,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_only_exact_own_nightly_executor_is_excluded",
+    "pytest": true,
+    "purpose": "Exclude only exact own harness and executor ID",
+    "defect": "Own executor blocks itself or foreign development is excluded",
+    "category": "fast unit",
+    "expected_seconds": 0.2,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_window_cleanup_requeues_tail_and_retains_result",
+    "pytest": true,
+    "purpose": "Use cleanup receipt to move timed-out work behind next job",
+    "defect": "Queue loses result or replays before owned cleanup",
+    "category": "fast unit",
+    "expected_seconds": 0.2,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_unverified_cleanup_keeps_own_claim_without_replay",
+    "pytest": true,
+    "purpose": "Retain unresolved own claim after failed cleanup",
+    "defect": "Unknown lifecycle is released or unfinished payload is replayed",
+    "category": "fast unit",
+    "expected_seconds": 0.2,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_nightly_queue.py::test_host_queues_are_independent",
+    "pytest": true,
+    "purpose": "Run separate 100 44 and 88 queue state",
+    "defect": "A job on one host blocks the entire fleet",
+    "category": "fast unit",
+    "expected_seconds": 0.2,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_install_runtime.py::test_opencode_replaces_existing_checkout_projection_and_bootstraps",
+    "pytest": true,
+    "purpose": "Upgrade existing checkout projection and load supported instruction bootstrap twice",
+    "defect": "Two GSD installations remain active or first model request misses entry policy",
+    "category": "focused integration",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_install_runtime.py::test_active_jsonc_override_gets_autoentry_and_preserves_strings",
+    "pytest": true,
+    "purpose": "Install in the actual native JSONC override layer",
+    "defect": "JSONC arrays shadow GSD plugin or bootstrap; comment syntax corrupts string settings",
+    "category": "focused integration",
+    "expected_seconds": 0.3,
+    "max_seconds": 5
+  },
+  {
+    "id": "tests/test_test_policy.py::test_timeout_collects_descendants_without_signalling_foreign_process",
+    "pytest": true,
+    "purpose": "Timeout a parent whose child ignores TERM while another process continues",
+    "defect": "Timed-out child leaks or cleanup signals unrelated work",
+    "category": "focused integration",
+    "expected_seconds": 0.4,
+    "max_seconds": 5
   }
 ]

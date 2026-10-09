@@ -14,7 +14,14 @@ from pathlib import Path
 def load_json(path: Path) -> dict:
     if not path.exists():
         return {}
-    data = json.loads(path.read_text())
+    text = path.read_text()
+    if path.suffix == ".jsonc":
+        # Preserve quoted comment-like strings while accepting native JSONC.
+        token = r'"(?:\\.|[^"\\])*"|//[^\n]*|/\*[\s\S]*?\*/'
+        text = re.sub(token, lambda m: m.group() if m.group().startswith('"') else ' ', text)
+        text = re.sub(r'"(?:\\.|[^"\\])*"|,\s*(?=[}\]])',
+                      lambda m: m.group() if m.group().startswith('"') else '', text)
+    data = json.loads(text)
     if not isinstance(data, dict):
         raise SystemExit(f"expected a JSON object: {path}")
     return data
@@ -40,8 +47,14 @@ def backup(path: Path, backup_root: Path, home: Path) -> str | None:
     return str(target)
 
 
+def opencode_path(home: Path) -> Path:
+    directory = home / ".config/opencode"
+    # OpenCode loads JSONC after JSON; its arrays override the JSON layer.
+    return directory / ("opencode.jsonc" if (directory / "opencode.jsonc").exists() else "opencode.json")
+
+
 def configure_opencode(plugin_root: Path, home: Path) -> Path:
-    path = home / ".config" / "opencode" / "opencode.json"
+    path = opencode_path(home)
     data = load_json(path)
     shim = str(plugin_root / "opencode-plugin" / "index.js")
     plugins = [
@@ -49,7 +62,10 @@ def configure_opencode(plugin_root: Path, home: Path) -> Path:
         for value in data.get("plugin", [])
         if value == shim
         or not (
-            "/gsd/" in str(value)
+            "last-human-commit" in str(value)
+            or "/lhc-" in str(value)
+            or "/gsd/" in str(value)
+            or "/gsd-agent-plugin/" in str(value)
             or "@megamen32/gsd-opencode-plugin" in str(value)
         )
     ]
@@ -61,11 +77,22 @@ def configure_opencode(plugin_root: Path, home: Path) -> Path:
     if not isinstance(skills, dict):
         raise SystemExit(f"expected skills to be a JSON object: {path}")
     skill_path = str(plugin_root / "skills")
-    paths = [value for value in skills.get("paths", []) if "/gsd/" not in str(value)]
+    paths = [value for value in skills.get("paths", [])
+             if "/gsd/" not in str(value) and "/gsd-agent-plugin/" not in str(value)]
     if skill_path not in paths:
         paths.append(skill_path)
     skills["paths"] = paths
     data["skills"] = skills
+    # Supported instruction bootstrap also covers hosts whose experimental
+    # system transform hook is unavailable. One marked policy, same upstream route.
+    bootstrap = home / ".config/opencode/ogsd-bootstrap.md"
+    if (plugin_root / "hooks/autoentry.md").exists():
+        bootstrap.parent.mkdir(parents=True, exist_ok=True)
+        bootstrap.write_text("GSD_PLUGIN_ROOT=" + str(plugin_root) + "\n" +
+                             (plugin_root / "hooks/autoentry.md").read_text())
+        instructions = data.setdefault("instructions", [])
+        if str(bootstrap) not in instructions:
+            instructions.append(str(bootstrap))
     write_json(path, data)
     return path
 
@@ -109,8 +136,9 @@ def main() -> None:
         args.backup_root or home / ".local" / "state" / "gsd-agent-plugin" / stamp
     ).expanduser()
     selected = [args.runtime]
-    paths = {"opencode": home / ".config" / "opencode" / "opencode.json",
+    paths = {"opencode": opencode_path(home),
              "codex": home / ".codex/AGENTS.md"}
+    backup(home / ".config/opencode/ogsd-bootstrap.md", backup_root, home)
     backups = {
         runtime: saved
         for runtime in selected

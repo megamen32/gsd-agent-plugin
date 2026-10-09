@@ -332,6 +332,8 @@ def main() -> int:
         includes=[
             "hooks",
             "scripts",
+            "tests",
+            "docs",
             "agents",
             "bin",
             "get-shit-done",

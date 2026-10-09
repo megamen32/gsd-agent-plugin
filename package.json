@@ -12,6 +12,8 @@
     "skills/",
     "hooks/",
     "scripts/",
+    "tests/",
+    "docs/",
     "agents/",
     "bin/",
     "get-shit-done/",

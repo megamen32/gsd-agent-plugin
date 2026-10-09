@@ -25,8 +25,20 @@ codex plugin marketplace add megamen32/megamen32-public-marketplace --ref main
 codex plugin add gsd@megamen32-public
 ```
 
-Start a new Codex session after installation, then use the normal `gsd:*`
-skills. Completion-capable workflows automatically load the personal acceptance
+Start a new Codex session after installation. OGSD automatically selects the
+shortest original `gsd:*` route for engineering work, then continues through
+consumer acceptance. No manual `gsd-start` is needed. Plugin SessionStart hooks
+supply context only and never launch another session. For Codex hosts where
+hooks await trust, install the supported user instruction bootstrap once:
+
+```bash
+python3 scripts/install_runtime.py --runtime codex --plugin-root /path/to/installed/gsd
+```
+
+OpenCode's compatibility installer wires both its native system hook and its
+supported instruction bootstrap, preserving unrelated configuration.
+
+ Completion-capable workflows automatically load the personal acceptance
 gate; `gsd:gsd-acceptance-gate` is also available directly.
 
 During an active GSD workflow, choosing a technical-report detour or preparing
@@ -103,3 +115,26 @@ python3 scripts/sync_upstream.py --force
 Build provenance is recorded in [`UPSTREAM.json`](UPSTREAM.json). The upstream
 project remains credited and licensed separately in
 [`LICENSE.upstream`](LICENSE.upstream).
+
+## Test modes and nightly
+
+`python3 scripts/test_policy.py` runs fast unit and focused integration checks
+with a hard **180-second combined deadline**. `tests/catalog.json` declares every
+scenario's purpose, detected defect, category, expected time and maximum time.
+Unclassified coverage, timeout and incomplete summaries fail the run.
+
+`python3 scripts/test_policy.py --mode nightly --deadline 120` retains slow
+upstream reconstruction separately. Run it through the existing bounded runner
+from a clean, pinned input; reconstruction changes generated payload and must
+never overwrite unrelated work.
+
+`scripts/nightly_queue.py` is a host-local queue adapter for the existing
+`bounded-foreground.py` lifecycle. Each of 100/44/88 owns independent state.
+Fresh Herder active development skips before booking; unavailable, stale or
+truncated native discovery defers. Only the exact own nightly executor can be
+excluded. The runner enforces finite CPU/RAM/tasks/temp/I/O and window budgets,
+terminates only its owned generation, and verifies cleanup. An unfinished job
+returns to the tail only after cleanup proof; unknown cleanup retains its claim.
+
+No new daemon, MCP or fleet-wide exclusive slot is installed. See
+[delivery evidence and remaining dependencies](docs/OGSD-DELIVERY.md).

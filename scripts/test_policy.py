@@ -3,6 +3,7 @@
 from __future__ import annotations
 import argparse
 import json
+import math
 import os
 import signal
 import subprocess
@@ -19,14 +20,20 @@ def execute(command, cwd, seconds, log):
         process = subprocess.Popen(command, cwd=cwd, stdout=output, stderr=subprocess.STDOUT,
                                    start_new_session=True, env={**os.environ, 'PYTEST_DISABLE_PLUGIN_AUTOLOAD': '1'})
         try:
-            return process.wait(timeout=seconds), False
+            return process.wait(timeout=max(.001,seconds-min(.2,seconds*.1))), False
         except subprocess.TimeoutExpired:
             os.killpg(process.pid, signal.SIGTERM)
             try:
-                process.wait(timeout=1)
+                process.wait(timeout=min(.1,seconds*.1))
             except subprocess.TimeoutExpired:
+                pass
+            # A terminating parent can leave descendants that ignore TERM.
+            # The private process group remains ours until the last member exits.
+            try:
                 os.killpg(process.pid, signal.SIGKILL)
-                process.wait()
+            except ProcessLookupError:
+                pass
+            process.wait(timeout=.1)
             return 124, True
 
 
@@ -37,7 +44,8 @@ def validate(catalog, collected):
     for case in catalog:
         if case['category'] not in CATEGORIES or not case['purpose'] or not case['defect']:
             raise ValueError('missing test classification')
-        if not 0 < case['expected_seconds'] <= case['max_seconds']:
+        if (any(type(case[k]) not in (int,float) or not math.isfinite(case[k]) for k in ('expected_seconds','max_seconds'))
+                or not 0 < case['expected_seconds'] <= case['max_seconds']):
             raise ValueError('invalid duration')
         if case['category'] == 'slow nightly' and not case.get('nightly_reason'):
             raise ValueError('nightly requires retained coverage rationale')
@@ -75,10 +83,10 @@ def main():
         report['planned'] = len(selected)
         for index, case in enumerate(selected):
             remaining = deadline-(time.monotonic()-started)
-            if remaining <= 0:
+            if remaining <= .2:
                 report['status'] = 'TIMEOUT'; break
             command = [sys.executable, '-m', 'pytest', '-q', case['id']] if case.get('pytest') else case['command']
-            command = [x.replace('{root}',str(ROOT)).replace('{python}',sys.executable) for x in command]
+            command = [x.replace('{root}',str(ROOT)).replace('{python}',sys.executable).replace('{upstream_version}',(ROOT/'VERSION').read_text().strip()) for x in command]
             case_start = time.monotonic()
             code, timed_out = execute(command, ROOT, min(remaining, case['max_seconds']), args.result_dir / f'{index}.log')
             report['cases'].append({'id':case['id'], 'status':'TIMEOUT' if timed_out else 'PASS' if code==0 else 'FAIL',
@@ -87,7 +95,7 @@ def main():
             if code:
                 report['status']='TIMEOUT' if timed_out else 'FAIL'; break
         else:
-            report['status']='GREEN' if selected and len(report['cases'])==len(selected) else 'INCOMPLETE'
+            report['status']='GREEN' if selected and len(report['cases'])==len(selected) and time.monotonic()-started<=deadline else 'INCOMPLETE'
     except Exception as error:
         report['error']=str(error); report['status']='FAIL'
     save()

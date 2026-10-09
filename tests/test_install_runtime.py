@@ -120,3 +120,35 @@ def test_runtime_updates_replace_legacy_gsd_paths(tmp_path: Path) -> None:
     opencode = json.loads(opencode_path.read_text())
     assert opencode["plugin"] == ["other", str(ROOT / "opencode-plugin" / "index.js")]
     assert opencode["skills"]["paths"] == ["/other-skills", str(ROOT / "skills")]
+
+
+def test_opencode_replaces_existing_checkout_projection_and_bootstraps(tmp_path):
+    home=tmp_path/'home'
+    path=home/'.config/opencode/opencode.json'
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps({'plugin':['/old/gsd-agent-plugin/opencode-plugin/index.js','foreign'],
+                                'skills':{'paths':['/old/gsd-agent-plugin/skills','/foreign']},
+                                'instructions':['/foreign/policy.md']}))
+    env={**os.environ,'HOME':str(home)}
+    for _ in range(2):
+        subprocess.run([sys.executable,str(INSTALLER),'--plugin-root',str(ROOT)],env=env,check=True,capture_output=True)
+    cfg=json.loads(path.read_text())
+    assert cfg['plugin']==['foreign',str(ROOT/'opencode-plugin/index.js')]
+    assert cfg['skills']['paths']==['/foreign',str(ROOT/'skills')]
+    assert cfg['instructions']==['/foreign/policy.md',str(home/'.config/opencode/ogsd-bootstrap.md')]
+    assert 'gsd-fast' in (home/'.config/opencode/ogsd-bootstrap.md').read_text()
+
+
+def test_active_jsonc_override_gets_autoentry_and_preserves_strings(tmp_path):
+    home=tmp_path/'home'
+    path=home/'.config/opencode/opencode.jsonc'
+    path.parent.mkdir(parents=True)
+    path.write_text('{// active native config\n"model":"keep/model", "plugin":["foreign",], "instructions":["/policy.md"], "example":"https://example/a,}/*text*/",}')
+    (path.parent/'opencode.json').write_text('{"model":"shadowed/model"}')
+    env={**os.environ,'HOME':str(home)}
+    subprocess.run([sys.executable,str(INSTALLER),'--plugin-root',str(ROOT)],env=env,check=True,capture_output=True)
+    cfg=json.loads(path.read_text())
+    assert cfg['model']=='keep/model' and cfg['example']=='https://example/a,}/*text*/'
+    assert cfg['plugin']==['foreign',str(ROOT/'opencode-plugin/index.js')]
+    assert cfg['instructions']==['/policy.md',str(home/'.config/opencode/ogsd-bootstrap.md')]
+    assert json.loads((path.parent/'opencode.json').read_text())['model']=='shadowed/model'

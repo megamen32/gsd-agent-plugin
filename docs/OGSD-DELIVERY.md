@@ -53,3 +53,5 @@ Installed-cache release initially exposed absent optional SDK dependencies
 declared dependencies with lifecycle scripts disabled; no package metadata was
 changed. The affected installed SDK case is checked before resumed acceptance.
 Native runtime verification now reads the active JSONC layer too.
+
+Fleet continuation: [installed host evidence and remaining native window](OGSD-FLEET-DELIVERY-20261009.md). The old44/88 local-Herder absence is historical evidence, not proof of a free host. All100/44/88/Mac runtime adapters now09a1584; native nightly route/profile remains infra-owned.

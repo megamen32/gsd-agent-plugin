@@ -54,4 +54,15 @@ declared dependencies with lifecycle scripts disabled; no package metadata was
 changed. The affected installed SDK case is checked before resumed acceptance.
 Native runtime verification now reads the active JSONC layer too.
 
-Fleet continuation: [installed host evidence and remaining native window](OGSD-FLEET-DELIVERY-20261009.md). The old44/88 local-Herder absence is historical evidence, not proof of a free host. All100/44/88/Mac runtime adapters now09a1584; native nightly route/profile remains infra-owned.
+Fleet continuation: [installed host evidence and remaining native window](OGSD-FLEET-DELIVERY-20261009.md). The table above records earlier findings; the follow-up contains the current result. All100/44/88/Mac runtime adapters are4f603b4, one original gsd@megamen32-public each. The installed public manifests pass the official Agent Plugins1.0 schema. The installer100 permission repair and preservation checks are complete.
+
+The legacy original-budget mismatch is resolved by the infra-owned100 profile
+gsd-nightly-window100 at8064174. The adapter preserves _profile and invokes
+the enduring registered stock route. Actual pure validation passed without
+booking. One approved real job is pending in100's queue; connected ticks
+confirmed100 ACTIVE and44/88 UNKNOWN, all without reservations. The remaining
+acceptance is one real timeout, own cleanup/checkpoint and tail requeue after
+confirmed FREE, expected33s/max60s. Host release/completeness is the concrete
+blocker; no active development may be exempted or stopped. AutoGram deployment
+is independent. The infra-owned watch leak was repaired without a global limit
+increase; the earlier ENOSPC note is historical.

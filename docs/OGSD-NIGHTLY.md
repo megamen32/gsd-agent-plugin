@@ -50,7 +50,7 @@ Current native dependencies and evidence: [delivery tracker](OGSD-DELIVERY.md).
 | Fresh OpenCode engineering session | Load original GSD through native config and verify temporary file | JSONC override hides plugin/bootstrap or entry route is ignored | slow nightly | 60 / 180 |
 | Live busy-host tick | Native Herder active read then skip before reservation | Nightly books a development host | focused integration | 2 / 12 |
 | Unknown44/88 tick | Defer when native activity cannot be observed | Unreachable host is falsely marked free | focused integration | 1 / 12 |
-| Native window cleanup | Existing runner terminates owned generation, clears own reserve, retains checkpoint, requeues tail | Foreign stop, leaked reservation, replay or false GREEN | slow nightly | profile-specific / finite reviewed profile wall plus stock cleanup |
+| Registered100 native window cleanup | Existing runner terminates owned generation, clears own reserve, retains checkpoint, requeues tail | Foreign stop, leaked reservation, replay or false GREEN | slow nightly | 33 / 60 (stock wall30, queue window40) |
 
 A scenario that needs a longer window uses an already accepted registered runner
 profile. The adapter never raises that profile's resource or wall limits. Fresh
@@ -81,6 +81,22 @@ session as the own nightly executor.
 
 Published profile: gsd-nightly-window100, registered by infrastructure commit
 8064174. This is the100 profile only; no portable44/88 profile is implied.
-100/44 active and88 incomplete native coverage defer before reservation.
+The latest connected ticks returned100 ACTIVE and44/88 UNKNOWN due to
+incomplete native coverage; all deferred before reservation. Earlier44 ACTIVE
+evidence must not be used to claim its later partial idle observation is FREE.
 The GSD engineering session is not an executor exemption. The approved native
 case remains pending until actual FREE through the enduring observer/runner.
+
+The existing approved100 job is queued as ogsd-native-window-20261009. Its
+stock wall30/window40 acceptance is expected33s/max60s; native timeout, owned
+cleanup/checkpoint and tail requeue are still pending. On100 use:
+
+~~~text
+python3 "$GSD_PLUGIN_ROOT/scripts/nightly_queue.py" tick --host 100 --native-observer /usr/bin/python3 /home/roomhacker/ServersAdministartion/.tmp/ogsd-infra-20261009/observe_host.py 100
+~~~
+
+On44/88 invoke that same canonical observer command through SSH to
+roomhacker@192.168.2.100 with the actual host argument, never
+copy its source or substitute central unfiltered inventory. Place the exact
+observer argv after --native-observer. Do not pass --own-executor for the
+engineering owner. No new scheduling layer is needed for this connection.

@@ -67,11 +67,31 @@ incomplete. No development session was excluded as an executor.
 
 Native cleanup acceptance remains open until one real cycle runs on confirmed
 FREE through that existing route. The remaining run is expected33s/max60s
-after FREE becomes available; no honest wall-clock ETA exists for host release.
+after FREE becomes available; no honest wall-clock ETA exists for host release
+or the missing native visibility route.
 Infraowner2c/R38 own observation completeness and the infrastructure profile;
 their helper/runtime/infra paths were not changed by GSD. No portable44/88
 runner profile, new scheduler, service or daemon was introduced. Nightly does
 not block AutoGram deployment.
+
+Infrastructure owner's subsequent capability result at
+Admin.tmp/native-visibility-route-20261009/capability-result.json identifies
+the remaining dependency: independent stdio control clients on44/88 have no
+supported server-side attachable listener. Sharing CODEX_HOME does not share
+their live in-memory status. The primary /rpc covers only its selected server;
+OpenCode /session/status is workspace-scoped, persisted session records are
+not live status, and global/event only observes future events. Waiting for the
+primary to become idle therefore cannot establish complete FREE coverage.
+
+Smallest required next action: the actual owner of each independent stdio
+control client supplies a read-only live-status export through its existing
+route; infraowner2c integrates that observation before complete=true is allowed.
+GSD must keep UNKNOWN/pending until then, without stdin attachment, restart,
+new daemon or a development-session exemption. The infra owner refreshed only
+the enduring case's observer pin and reported actual stock pure acceptance at
+Admin.tmp/ogsd-infra-20261009/enduring-canary/native-observer-coverage-pin-refresh.json.
+The queued job SHA32981eb71bd37d5a1bc14e85b38f4eb4a4be73967b95efc6a196562f88b2b2b6
+and numeric budget remain unchanged; this refresh is not booking or payload proof.
 
 Private preserved receipts: .tmp/ogsd/fleet-delivery/receipt.json.
 Per-host backup/verification receipts:

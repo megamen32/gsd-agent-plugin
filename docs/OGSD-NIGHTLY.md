@@ -100,3 +100,12 @@ roomhacker@192.168.2.100 with the actual host argument, never
 copy its source or substitute central unfiltered inventory. Place the exact
 observer argv after --native-observer. Do not pass --own-executor for the
 engineering owner. No new scheduling layer is needed for this connection.
+
+Complete coverage is currently blocked by independent stdio control-client
+ownership on44/88, not by absence of a local Herder port. There is no supported
+server-side independent attach route; the primary socket and workspace-scoped
+OpenCode status cannot certify all writers. Required dependency: read-only
+live-status export from those actual client owners, integrated by the infra
+owner into the existing observer. Waiting for primary idle alone must not turn
+UNKNOWN into FREE. See the fleet delivery evidence; keep the approved job
+pending and do not attach stdin, restart sessions or introduce another service.

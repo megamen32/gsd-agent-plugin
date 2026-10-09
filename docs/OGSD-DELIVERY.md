@@ -63,6 +63,11 @@ booking. One approved real job is pending in100's queue; connected ticks
 confirmed100 ACTIVE and44/88 UNKNOWN, all without reservations. The remaining
 acceptance is one real timeout, own cleanup/checkpoint and tail requeue after
 confirmed FREE, expected33s/max60s. Host release/completeness is the concrete
-blocker; no active development may be exempted or stopped. AutoGram deployment
+blocker; no active development may be exempted or stopped. Infrastructure's
+capability check confirms that merely waiting for primary idle cannot resolve
+44/88's independent stdio coverage. The actual stdio control-client owners
+must supply read-only live-status exports through their existing routes;
+infraowner2c owns their observation integration. Details and evidence are in
+the fleet follow-up. AutoGram deployment
 is independent. The infra-owned watch leak was repaired without a global limit
 increase; the earlier ENOSPC note is historical.

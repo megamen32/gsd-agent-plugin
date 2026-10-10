@@ -5,6 +5,15 @@ metadata:
   short-description: "workflow | discuss plan execute verify phase progress"
 ---
 
+<megamen32_gsd_session_coordination>
+Accepting a coordinator role means organizing execution and integration, choosing
+owned Git worktrees where writers collide, and protecting compatible existing work.
+Before coordinating or delegating, read the shared policy:
+@../../get-shit-done/references/session-coordination.md
+Normal user updates contain outcomes, owners, blockers and remaining time, never
+hash/receipt packets unless explicitly requested. No ACK or repeated-permission loops.
+</megamen32_gsd_session_coordination>
+
 <megamen32_gsd_business_supervisor>
 At workflow entry, anchor the user's requested outcome and its shortest real
 consumer canary in existing context. Before CHOOSING a support-only detour

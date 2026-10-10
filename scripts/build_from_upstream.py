@@ -13,6 +13,17 @@ from emit_opencode import emit
 
 
 ADAPTER_MARKER = "<gsd_agent_plugin_adapter>"
+COORDINATION_MARKER = "<megamen32_gsd_session_coordination>"
+COORDINATION = """<megamen32_gsd_session_coordination>
+Accepting a coordinator role means organizing execution and integration, choosing
+owned Git worktrees where writers collide, and protecting compatible existing work.
+Before coordinating or delegating, read the shared policy:
+@../../get-shit-done/references/session-coordination.md
+Normal user updates contain outcomes, owners, blockers and remaining time, never
+hash/receipt packets unless explicitly requested. No ACK or repeated-permission loops.
+</megamen32_gsd_session_coordination>
+
+"""
 ADAPTER = """<gsd_agent_plugin_adapter>
 This GSD distribution is loaded from an Agent Plugin rather than a fixed runtime home.
 
@@ -125,6 +136,7 @@ def apply_personal_overlay(output: Path, overlay_root: Path) -> None:
         Path("get-shit-done/workflows/acceptance-gate.md"),
         Path("skills/gsd-business-supervisor"),
         Path("get-shit-done/workflows/business-supervisor.md"),
+        Path("get-shit-done/references/session-coordination.md"),
         Path("agents/gsd-business-supervisor.md"),
     ):
         src = overlay_root / relative
@@ -240,6 +252,7 @@ def inject_runtime_adapters(output: Path, source_prefix: str) -> None:
         text = skill_file.read_text()
         text = text.replace(source_prefix, "../..") if source_prefix else text
         text = inject_after_frontmatter(text, ADAPTER, ADAPTER_MARKER, skill_file)
+        text = inject_after_frontmatter(text, COORDINATION, COORDINATION_MARKER, skill_file)
         text = inject_after_frontmatter(
             text, SECURITY_AUTHORIZATION, SECURITY_AUTHORIZATION_MARKER, skill_file
         )
@@ -267,6 +280,8 @@ def inject_runtime_adapters(output: Path, source_prefix: str) -> None:
             SECURITY_AUTHORIZATION_MARKER,
             agent_file,
         )
+        agent_policy = COORDINATION.replace("@../../get-shit-done/", "@$GSD_PLUGIN_ROOT/get-shit-done/")
+        text = inject_after_frontmatter(text, agent_policy, COORDINATION_MARKER, agent_file)
         agent_file.write_text(text)
 
     for agent_file in sorted((output / "agents").glob("*.toml")):
@@ -284,6 +299,17 @@ def inject_runtime_adapters(output: Path, source_prefix: str) -> None:
             if boundary not in text:
                 raise SystemExit(f"missing developer_instructions boundary: {agent_file}")
             text = text.replace(boundary, boundary + SECURITY_AUTHORIZATION, 1)
+        agent_policy = COORDINATION.replace("@../../get-shit-done/", "@$GSD_PLUGIN_ROOT/get-shit-done/")
+        if COORDINATION_MARKER in text:
+            text = re.sub(
+                rf"{re.escape(COORDINATION_MARKER)}.*?</{re.escape(COORDINATION_MARKER[1:])}\n*",
+                lambda _: agent_policy, text, count=1, flags=re.DOTALL,
+            )
+        else:
+            boundary = "developer_instructions = '''\n"
+            if boundary not in text:
+                raise SystemExit(f"missing developer_instructions boundary: {agent_file}")
+            text = text.replace(boundary, boundary + agent_policy, 1)
         agent_file.write_text(text)
 
 

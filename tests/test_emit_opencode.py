@@ -124,6 +124,13 @@ def test_generic_emitter_builds_opencode_npm_projection(tmp_path: Path):
 
 
 def test_runtime_configures_native_opencode_shim(tmp_path: Path):
+    # Exercise the real installer against an owned payload inside its test lease.
+    # Its SDK link must not point out to the mutable source checkout.
+    plugin = make_agent_plugin(tmp_path)
+    (plugin / "bin").mkdir()
+    (plugin / "bin/gsd-sdk.js").write_bytes((ROOT / "bin/gsd-sdk.js").read_bytes())
+    (plugin / "opencode-plugin").mkdir()
+    (plugin / "opencode-plugin/index.js").write_bytes((ROOT / "opencode-plugin/index.js").read_bytes())
     home = tmp_path / "home"
     config_dir = home / ".config/opencode"
     config_dir.mkdir(parents=True)
@@ -139,7 +146,7 @@ def test_runtime_configures_native_opencode_shim(tmp_path: Path):
     env = os.environ.copy()
     env["HOME"] = str(home)
     subprocess.run(
-        [sys.executable, str(CONFIGURATOR), "--plugin-root", str(ROOT)],
+        [sys.executable, str(CONFIGURATOR), "--plugin-root", str(plugin)],
         check=True,
         env=env,
         capture_output=True,
@@ -148,9 +155,11 @@ def test_runtime_configures_native_opencode_shim(tmp_path: Path):
 
     config = json.loads((config_dir / "opencode.json").read_text())
     assert "foreign-plugin" in config["plugin"]
-    assert str(ROOT / "opencode-plugin/index.js") in config["plugin"]
+    assert str(plugin / "opencode-plugin/index.js") in config["plugin"]
     assert "/foreign/skills" in config["skills"]["paths"]
-    assert str(ROOT / "skills") in config["skills"]["paths"]
+    assert str(plugin / "skills") in config["skills"]["paths"]
+    launcher = home / ".local/bin/gsd-sdk"
+    assert launcher.is_symlink() and launcher.resolve() == plugin / "bin/gsd-sdk.js"
 
 
 def test_generic_emitter_accepts_mcp_only_agent_plugin(tmp_path: Path):

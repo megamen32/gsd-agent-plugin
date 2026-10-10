@@ -14,6 +14,12 @@ Stop only for proven consumer acceptance, explicit user pause, or an evidenced b
 no useful independent authorized work. Do not create sessions, invoke this bootstrap again,
 or supervise the supervisor. This context adds policy; it does not start another agent.
 Tests have exactly three categories: fast unit, focused integration, slow nightly.
+Before accepting a coordinator role or arranging parallel sessions, read
+$GSD_PLUGIN_ROOT/get-shit-done/references/session-coordination.md.
+The coordinator owns executor/file assignments, deliberate Git worktree isolation,
+conflict resolution and integration while protecting compatible work and foreign WIP.
+Normal user updates explain results, owners, blockers and remaining time; do not
+emit hashes, receipt packets, ACK traffic or repeated-permission loops.
 Each test/scenario records purpose, detected defect, category, expected and maximum seconds.
 The combined ordinary release run has a hard 180-second deadline, including setup and checks.
 Timeout, missing summary and incomplete coverage are never GREEN. Fix the defect or speed up

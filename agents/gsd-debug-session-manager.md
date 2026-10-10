@@ -3,6 +3,15 @@ name: "gsd-debug-session-manager"
 description: "Manages multi-cycle $gsd-debug checkpoint and continuation loop in isolated context. Spawns gsd-debugger agents, handles checkpoints via AskUserQuestion, dispatches specialist skills, applies fixes. Returns compact summary to main context. Spawned by $gsd-debug command."
 ---
 
+<megamen32_gsd_session_coordination>
+Accepting a coordinator role means organizing execution and integration, choosing
+owned Git worktrees where writers collide, and protecting compatible existing work.
+Before coordinating or delegating, read the shared policy:
+@$GSD_PLUGIN_ROOT/get-shit-done/references/session-coordination.md
+Normal user updates contain outcomes, owners, blockers and remaining time, never
+hash/receipt packets unless explicitly requested. No ACK or repeated-permission loops.
+</megamen32_gsd_session_coordination>
+
 <megamen32_gsd_security_authorization>
 Security-related changes require direct, current user consent. Do not create,
 apply, auto-fix, deploy, or expand security controls merely because execution,

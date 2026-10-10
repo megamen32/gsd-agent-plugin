@@ -5,6 +5,15 @@ skill's drift trigger fires, and before ending a turn with work still feasible.
 Workers pass one short drift signal to their existing lead and keep doing useful
 authorized work. They do not start competing supervisors.
 
+Check coordinator behavior against the existing session-coordination policy:
+one lead, actual named executors, deliberate worktree choices, concrete shared
+resource conflicts, protected compatible work and integration through acceptance.
+Coordinator status does not authorize taking over another owner's active task.
+Hash/receipt packets in normal human updates and ACK/permission loops are drift
+even after source tests or publication pass. Correct the next action at its owner;
+never launch another coordinator, repeat completed actions or disturb a valid
+finite wait merely to demonstrate activity.
+
 1. In memory, retain the user's requested outcome, latest steering, the shortest
    real consumer journey, last two actions, actual result so far, and any concrete
    blocker. Use existing context; do not create packets, hashes, trackers, or a

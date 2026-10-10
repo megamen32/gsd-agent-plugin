@@ -461,5 +461,14 @@
     "category": "focused integration",
     "expected_seconds": 0.3,
     "max_seconds": 5
+  },
+  {
+    "id": "tests/test_overlay.py::test_coordination_policy_survives_refresh_with_resolvable_skill_agent_routes",
+    "pytest": true,
+    "purpose": "Keep coordinator policy discoverable from new skills, Markdown/TOML agents and bootstrap after repeated upstream refresh",
+    "defect": "Missing policy, incorrect agent reference or duplicate generated instructions",
+    "category": "fast unit",
+    "expected_seconds": 0.2,
+    "max_seconds": 5
   }
 ]

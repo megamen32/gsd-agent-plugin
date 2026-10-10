@@ -140,6 +140,33 @@ def test_isolated_projection_path_is_removed_from_agent_toml(tmp_path: Path) -> 
     assert "@$GSD_PLUGIN_ROOT/get-shit-done/references/demo.md" in prompt.read_text()
 
 
+def test_coordination_policy_survives_refresh_with_resolvable_skill_agent_routes(tmp_path: Path) -> None:
+    """fast unit, expected0.2/max5s: omitted policy, wrong agent path or duplicate refresh."""
+    build = load_build_module()
+    output = tmp_path / "output"
+    skill = output / "skills/gsd-future-coordinator/SKILL.md"
+    skill.parent.mkdir(parents=True)
+    skill.write_text('---\nname: gsd-future-coordinator\ndescription: fixture\n---\n\nOwned upstream body.\n')
+    agent_md = output / "agents/gsd-coordinator.md"
+    agent_md.parent.mkdir(parents=True)
+    agent_md.write_text('---\nname: gsd-coordinator\n---\n\nOwned upstream role.\n')
+    agent_toml = output / "agents/gsd-coordinator.toml"
+    agent_toml.write_text("name = 'gsd-coordinator'\ndeveloper_instructions = '''\nOwned upstream role.\n'''\n")
+    for _ in range(2):
+        build.apply_personal_overlay(output, ROOT / "overlay")
+        build.inject_runtime_adapters(output, "")
+    policy = output / "get-shit-done/references/session-coordination.md"
+    assert policy.read_bytes() == (ROOT / "overlay/get-shit-done/references/session-coordination.md").read_bytes()
+    for path in (skill, agent_md, agent_toml):
+        text = path.read_text()
+        assert text.count(build.COORDINATION_MARKER) == 1
+        reference = next(line[1:] for line in text.splitlines() if line.startswith('@') and line.endswith('/session-coordination.md'))
+        resolved = Path(reference.replace('$GSD_PLUGIN_ROOT', str(output))) if '$GSD_PLUGIN_ROOT' in reference else (path.parent / reference).resolve()
+        assert resolved == policy.resolve(), path
+        assert 'Owned upstream' in text
+    assert '$GSD_PLUGIN_ROOT/get-shit-done/references/session-coordination.md' in (output / 'hooks/autoentry.md').read_text()
+
+
 def test_sdk_query_overlay_is_idempotent(tmp_path: Path) -> None:
     build = load_build_module()
     output = tmp_path / "output"

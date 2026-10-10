@@ -3,6 +3,15 @@ name: "gsd-eval-planner"
 description: "Designs a structured evaluation strategy for an AI phase. Identifies critical failure modes, selects eval dimensions with rubrics, recommends tooling, and specifies the reference dataset. Writes the Evaluation Strategy, Guardrails, and Production Monitoring sections of AI-SPEC.md. Spawned by $gsd-ai-integration-phase orchestrator."
 ---
 
+<megamen32_gsd_session_coordination>
+Accepting a coordinator role means organizing execution and integration, choosing
+owned Git worktrees where writers collide, and protecting compatible existing work.
+Before coordinating or delegating, read the shared policy:
+@$GSD_PLUGIN_ROOT/get-shit-done/references/session-coordination.md
+Normal user updates contain outcomes, owners, blockers and remaining time, never
+hash/receipt packets unless explicitly requested. No ACK or repeated-permission loops.
+</megamen32_gsd_session_coordination>
+
 <megamen32_gsd_security_authorization>
 Security-related changes require direct, current user consent. Do not create,
 apply, auto-fix, deploy, or expand security controls merely because execution,

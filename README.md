@@ -158,5 +158,12 @@ Focused regressions: `tests/test_task_continuity.py` (fast unit, expected2s,
 emergency20s). Real consumer proof uses native Codex app-server with native
 plugin installation, an already opened thread, same-thread resume, untrusted
 coordination context, authorized handoff and actual `thread/compact/start`;
-fixture artifacts and executed hook context must agree. Source tests and hook
+fixture artifacts and executed task/current-plan reads must agree. Source tests and hook
 listing alone are insufficient.
+
+The tested Codex0.162.1 portable AgentPlugin loader discovers skills but intentionally
+skips plugin hooks (`plugin/read` and `hooks/list` return an empty hook list).
+Therefore native task continuity uses the existing OGSD instruction surface and
+original GSD skill adapter reference. The hook source remains for clients that
+support its existing declaration; this package does not claim automatic native
+hook delivery or silently copy it to user/project hook configuration.

@@ -7,6 +7,11 @@ At the first engineering request, automatically select and read the original GSD
 - substantial new project: skills/gsd-new-project/SKILL.md; bug investigation: skills/gsd-debug/SKILL.md.
 Resolve these paths below GSD_PLUGIN_ROOT. Do not ask the user to invoke gsd-start.
 Plain questions, translations and status requests need no engineering workflow.
+Before entry/reentry, resume/compaction and direction changes, read
+$GSD_PLUGIN_ROOT/get-shit-done/references/task-continuity.md and reconcile the
+saved original task/mandate/boundaries with current STATE and current SPEC/PLAN.
+Ordinary coordination messages do not replace the task; verified human-authorized
+coordinator or delegation handoffs within their mandate do, linked to the plan.
 Choose the shortest original route; keep the existing task and upstream state across turns.
 Continue authorized implementation, relevant checks and delivery to the real consumer result.
 A progress report, unit GREEN, or workflow artifact alone does not complete the task.
@@ -21,9 +26,9 @@ conflict resolution and integration while protecting compatible work and foreign
 Normal user updates explain results, owners, blockers and remaining time; do not
 emit hashes, receipt packets, ACK traffic or repeated-permission loops.
 Each test/scenario records purpose, detected defect, category, expected and maximum seconds.
-The combined ordinary release run has a hard 180-second deadline, including setup and checks.
-Timeout, missing summary and incomplete coverage are never GREEN. Fix the defect or speed up
-setup; move genuinely slow coverage to nightly with a reason, retaining the check.
+Expected duration is an observation; the finite emergency wall limit is ten times
+the expected duration, including setup. Do not stop a healthy run at 180 seconds.
+Timeout, missing summary and incomplete coverage are never GREEN; retain checkpoints.
 Nightly uses the existing bounded runner lifecycle and each host's independent finite queue.
 Fresh Herder active development means defer before reservation; unknown means defer.
 Exclude only the identified own nightly executor, never other development sessions.

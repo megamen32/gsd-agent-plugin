@@ -470,5 +470,41 @@
     "category": "fast unit",
     "expected_seconds": 0.2,
     "max_seconds": 5
+  },
+  {
+    "id": "tests/test_task_continuity.py::test_resume_and_compaction_restore_saved_task_without_mutating_it",
+    "pytest": true,
+    "category": "fast unit",
+    "purpose": "Restore own task and current-plan context through native SessionStart.",
+    "defect": "Route-only reentry loses original task or adopts another session.",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_task_continuity.py::test_initial_entry_names_session_record_without_inventing_assignment",
+    "pytest": true,
+    "category": "fast unit",
+    "purpose": "Restore own task and current-plan context through native SessionStart.",
+    "defect": "Route-only reentry loses original task or adopts another session.",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_task_continuity.py::test_all_original_skills_load_one_shared_task_continuity_reference",
+    "pytest": true,
+    "category": "fast unit",
+    "purpose": "Restore own task and current-plan context through native SessionStart.",
+    "defect": "Route-only reentry loses original task or adopts another session.",
+    "expected_seconds": 1,
+    "max_seconds": 10
+  },
+  {
+    "id": "tests/test_task_continuity.py::test_hook_with_missing_native_identity_does_not_open_other_sessions",
+    "pytest": true,
+    "category": "fast unit",
+    "purpose": "Restore own task and current-plan context through native SessionStart.",
+    "defect": "Route-only reentry loses original task or adopts another session.",
+    "expected_seconds": 1,
+    "max_seconds": 10
   }
 ]

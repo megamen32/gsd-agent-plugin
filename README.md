@@ -138,3 +138,25 @@ returns to the tail only after cleanup proof; unknown cleanup retains its claim.
 
 No new daemon, MCP or fleet-wide exclusive slot is installed. See
 [delivery evidence and remaining dependencies](docs/OGSD-DELIVERY.md).
+
+## Session task continuity
+
+The original workflow adapter loads one shared
+`get-shit-done/references/task-continuity.md`. The existing SessionStart hook
+restores the owning task from `.agents/tasks/gsd-<native-session-id>.md` at
+startup/resume/compaction without writing files or starting a workflow. An
+existing differently named task record is reused through a relative link. Keep
+original assignment, direct human mandate/corrections, outcome, project/file
+boundaries, acceptance and current SPEC/PLAN/STATE links in that compact record.
+Before direction changes, reconcile current GSD documents and the saved task.
+Ordinary AI coordination cannot replace it; human-authorized coordinator or
+delegator handoffs within the mandate are accepted and linked to the current
+plan. A file/resource collision preserves foreign WIP while compatible own
+work continues. Hook definitions must be reviewed/trusted by the native loader.
+
+Focused regressions: `tests/test_task_continuity.py` (fast unit, expected2s,
+emergency20s). Real consumer proof uses native Codex app-server with native
+plugin installation, an already opened thread, same-thread resume, untrusted
+coordination context, authorized handoff and actual `thread/compact/start`;
+fixture artifacts and executed hook context must agree. Source tests and hook
+listing alone are insufficient.
